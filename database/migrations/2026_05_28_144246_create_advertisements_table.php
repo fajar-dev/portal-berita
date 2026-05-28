@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('infographics', function (Blueprint $table) {
+        Schema::create('advertisements', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('image');
-            $table->string('slug')->unique();
-            $table->enum('status', ['published', 'draft'])->default('published');
+            $table->string('position'); // header, sidebar, home_middle, article_inline
+            $table->string('image_url');
+            $table->string('target_url');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('infographics');
+        Schema::dropIfExists('advertisements');
     }
 };

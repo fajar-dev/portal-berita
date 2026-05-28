@@ -11,13 +11,31 @@
     <meta name="description" content="@yield('meta_description', 'NusaKini menyajikan portal berita terkini seputar Politik, Ekonomi, Teknologi, Olahraga, Gaya Hidup, dan Internasional secara mendalam, cerdas, dan kredibel.')">
     <meta name="keywords" content="portal berita, berita terkini, EBT, ekonomi digital, AI medis, sport science, NusaKini, berita indonesia">
     <meta name="author" content="NusaKini Editorial Team">
+    <link rel="canonical" href="{{ request()->url() }}">
+    
+    <!-- Favicon & Themes -->
+    @php
+        $favicon = \App\Models\Setting::get('site_favicon');
+        $faviconUrl = $favicon ? asset($favicon) : asset('favicon.ico');
+    @endphp
+    <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
     
     <!-- OpenGraph Social Tags -->
     <meta property="og:title" content="@yield('title', 'NusaKini - Portal Berita Tepercaya')">
     <meta property="og:description" content="@yield('meta_description', 'NusaKini menyajikan portal berita terkini seputar Politik, Ekonomi, Teknologi, Olahraga secara mendalam dan berimbang.')">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:url" content="{{ request()->url() }}">
+    <meta property="og:image" content="@yield('og_image', asset('storage/images/hero_ebt.jpg'))">
     <meta property="og:site_name" content="NusaKini News Portal">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'NusaKini - Portal Berita Tepercaya')">
+    <meta name="twitter:description" content="@yield('meta_description', 'NusaKini menyajikan portal berita terkini seputar Politik, Ekonomi, Teknologi, Olahraga secara mendalam dan berimbang.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('storage/images/hero_ebt.jpg'))">
+
+    <!-- Dynamic Schema.org JSON-LD structured data -->
+    @yield('schema_json_ld')
 
     <!-- Vite Assets compiled -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -29,6 +47,11 @@
 
     <!-- Header Section -->
     @include('partials.header')
+
+    <!-- Header Advertisement Space -->
+    <div class="portal-container">
+        @include('partials.ad', ['position' => 'header'])
+    </div>
 
     <!-- Main Content Slot Wrapper -->
     <main id="main-content-section" class="portal-container">
@@ -60,7 +83,7 @@
                 <!-- Infographic Image Element Container -->
                 <div id="modal-image-wrapper" class="modal-media-wrapper" style="display: none;">
                     <div class="infographic-zoom-wrap">
-                        <img id="modal-infographic-img" src="" alt="Infografis">
+                        <img id="modal-infographic-img" data-src="" alt="Infografis" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                     </div>
                     <h3 id="modal-infographic-title" class="modal-media-caption"></h3>
                 </div>

@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 10. Premium Global Media Lightbox Modals
     initMediaModals();
+
+    // 11. AJAX Comments Loader (Lazy)
+    initAJAXComments();
+
+    // 12. Lazy Loading Images (JS based)
+    initLazyImages();
 });
 
 /* ==========================================================================
@@ -907,3 +913,85 @@ function initMediaModals() {
     });
 }
 
+
+/* ==========================================================================
+   11. AJAX Comments Loader
+   ========================================================================== */
+function initAJAXComments() {
+    const container = document.getElementById('comments-ajax-container');
+    if (!container) return;
+    
+    const slug = container.getAttribute('data-slug');
+    if (!slug) return;
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                observer.unobserve(entry.target);
+                
+                fetch(`/article/${slug}/comments-list`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => {
+                    if (res.ok) return res.text();
+                    throw new Error('Gagal memuat komentar');
+                })
+                .then(html => {
+                    // Set smooth fade transition
+                    container.style.opacity = '0';
+                    setTimeout(() => {
+                        container.innerHTML = html;
+                        container.style.transition = 'opacity 0.4s ease-in-out';
+                        container.style.opacity = '1';
+                    }, 200);
+                })
+                .catch(err => {
+                    console.error(err);
+                    container.innerHTML = '<div style="padding: 20px; text-align: center; color: red;">Gagal memuat komentar.</div>';
+                });
+            }
+        });
+    }, { rootMargin: "0px 0px 200px 0px" }); // Preload a bit before scrolling into view
+
+    observer.observe(container);
+}
+
+/* ==========================================================================
+   12. JS-Based Image Lazy Loading
+   ========================================================================== */
+function initLazyImages() {
+    const lazyImages = document.querySelectorAll('.lazy-image');
+    if (lazyImages.length === 0) return;
+
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                const dataSrc = img.getAttribute('data-src');
+                
+                if (dataSrc) {
+                    // Coba memuat gambar
+                    const tempImage = new Image();
+                    tempImage.src = dataSrc;
+                    
+                    tempImage.onload = () => {
+                        img.src = dataSrc;
+                        img.removeAttribute('data-src');
+                        img.classList.add('loaded');
+                        
+                        // Menghapus efek skeleton dari parent pembungkus jika ada
+                        if (img.parentElement && img.parentElement.classList.contains('lazy-image-wrap')) {
+                            img.parentElement.classList.add('loaded');
+                        }
+                    };
+                }
+                
+                observer.unobserve(img);
+            }
+        });
+    }, { rootMargin: "0px 0px 300px 0px" });
+
+    lazyImages.forEach(img => {
+        imageObserver.observe(img);
+    });
+}

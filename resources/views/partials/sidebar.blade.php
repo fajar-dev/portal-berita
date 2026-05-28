@@ -24,6 +24,9 @@
         </div>
     </div>
 
+    <!-- Sidebar Advertisement Space -->
+    @include('partials.ad', ['position' => 'sidebar'])
+
     @php
         $activePoll = \App\Models\Poll::where('is_active', true)->latest()->first();
     @endphp

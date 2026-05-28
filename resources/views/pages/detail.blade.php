@@ -2,6 +2,37 @@
 
 @section('title', $article['title'] . ' - NusaKini')
 @section('meta_description', $article['excerpt'])
+@section('og_type', 'article')
+@section('og_image', asset($article['image']))
+
+@section('schema_json_ld')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "{{ addslashes($article['title']) }}",
+  "image": [
+    "{{ asset($article['image']) }}"
+  ],
+  "datePublished": "{{ date('c', strtotime($article['date'])) }}",
+  "dateModified": "{{ date('c', strtotime($article['date'])) }}",
+  "author": [{
+      "@type": "Person",
+      "name": "{{ $article['author'] }}",
+      "url": "{{ route('news.author', str_replace('.', '-', $article['author_username'])) }}"
+    }],
+  "publisher": {
+    "@type": "Organization",
+    "name": "NusaKini",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ asset('favicon.ico') }}"
+    }
+  },
+  "description": "{{ addslashes($article['excerpt']) }}"
+}
+</script>
+@endsection
 
 @section('progress_bar')
     <!-- Smooth Reading Progress Bar Indicator at top -->
@@ -31,7 +62,7 @@
                     <div class="article-info-bar">
                         
                         <div class="author-meta-block">
-                            <img src="{{ $article['author_avatar'] }}" alt="{{ $article['author'] }}" class="author-meta-avatar">
+                            <img data-src="{{ $article['author_avatar'] }}" alt="{{ $article['author'] }}" class="author-meta-avatar lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                             <div>
                                 <a href="{{ route('news.author', str_replace('.', '-', $article['author_username'])) }}" class="author-meta-name">
                                     {{ $article['author'] }}
@@ -79,7 +110,7 @@
 
                 <!-- Main Featured Article Image -->
                 <div style="border-radius: var(--border-radius-md); overflow: hidden; margin-bottom: 30px; box-shadow: var(--shadow-sm); border:1px solid var(--color-border);">
-                    <img src="{{ $article['image'] }}" alt="{{ $article['title'] }}" style="width: 100%; display: block; object-fit: cover;">
+                    <img data-src="{{ $article['image'] }}" alt="{{ $article['title'] }}" style="width: 100%; display: block; object-fit: cover;" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                 </div>
 
                 <!-- Rich Format Article Body -->
@@ -130,7 +161,7 @@
                Author Profile Card
                ========================================================================== -->
             <div class="author-profile-card">
-                <img src="{{ $article['author_avatar'] }}" alt="{{ $article['author'] }}" class="author-profile-avatar">
+                <img data-src="{{ $article['author_avatar'] }}" alt="{{ $article['author'] }}" class="author-profile-avatar lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                 <div class="author-profile-content">
                     <h4 class="author-profile-name">
                         Ditulis Oleh: <a href="{{ route('news.author', str_replace('.', '-', $article['author_username'])) }}">{{ $article['author'] }}</a>
@@ -147,6 +178,9 @@
                 </div>
             </div>
 
+            <!-- Inline Advertisement Space -->
+            @include('partials.ad', ['position' => 'article_inline'])
+
             <!-- ==========================================================================
                Comments Widget Section (Interactive & Persistent in localStorage)
                ========================================================================== -->
@@ -155,27 +189,19 @@
                     Komentar ({{ $article['comments_count'] }})
                 </h3>
 
-                <!-- Comments List Container -->
-                <div class="comments-list" id="comments-list-box" data-base-count="{{ $article['comments_count'] }}">
-                    
-                    @if(count($article['comments']) > 0)
-                        @foreach($article['comments'] as $comment)
-                            <div class="comment-item">
-                                <div class="comment-header">
-                                    <span class="comment-author">{{ $comment['name'] }}</span>
-                                    <span class="comment-date">{{ $comment['date'] }}</span>
-                                </div>
-                                <div class="comment-body">
-                                    {!! nl2br(e($comment['body'])) !!}
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <div class="empty-comments-state" style="text-align: center; padding: 30px; color: var(--color-text-muted); font-size: 0.9rem;">
-                            Belum ada komentar. Jadilah yang pertama memberikan tanggapan!
+                <!-- Comments List Container (Lazy Loaded via AJAX) -->
+                <div class="comments-list" id="comments-ajax-container" data-slug="{{ $article['slug'] }}">
+                    <!-- Skeleton Loader -->
+                    <div class="skeleton-loader-container">
+                        <div class="skeleton-comment-item">
+                            <div class="skeleton-header"></div>
+                            <div class="skeleton-body"></div>
                         </div>
-                    @endif
-
+                        <div class="skeleton-comment-item">
+                            <div class="skeleton-header"></div>
+                            <div class="skeleton-body" style="width: 80%;"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Comment Form -->
@@ -208,8 +234,8 @@
                     <div class="news-grid grid-3">
                         @foreach($related as $item)
                             <article class="news-card">
-                                <div class="card-image-wrap" style="padding-top: 55%;">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
+                                <div class="card-image-wrap lazy-image-wrap" style="padding-top: 55%;">
+                                    <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                                 </div>
                                 <div class="card-content" style="padding: 15px;">
                                     <div class="article-meta" style="font-size: 0.7rem; margin-bottom: 6px;">

@@ -1,2 +1,15 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Block indexing of search, dynamic actions, bookmarks, and APIs to prevent GSC index bloat
+Disallow: /search
+Disallow: /bookmarks
+Disallow: /newsletter/subscribe
+Disallow: /contact/send
+Disallow: /article/*/react
+Disallow: /poll/*/results
+Disallow: /poll/vote
+
+# Point search engine crawlers to our dynamic sitemap
+Sitemap: http://localhost:8000/sitemap.xml
+Sitemap: http://127.0.0.1:8000/sitemap.xml

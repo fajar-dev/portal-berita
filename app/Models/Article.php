@@ -12,10 +12,19 @@ use Illuminate\Support\Carbon;
 #[Fillable([
     'user_id', 'slug', 'title', 'excerpt', 'content', 'category', 'image', 
     'read_time', 'views', 'is_headline', 'is_secondary_headline', 
-    'reactions_suka', 'reactions_terkejut', 'reactions_inspiratif', 'reactions_sedih'
+    'reactions_suka', 'reactions_terkejut', 'reactions_inspiratif', 'reactions_sedih', 'status'
 ])]
 class Article extends Model
 {
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'status' => \App\Enums\ContentStatus::class,
+    ];
+
     /**
      * Get the author of the article.
      */

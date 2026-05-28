@@ -17,6 +17,8 @@ use App\Models\PollVote;
 use App\Models\Poll;
 use App\Models\Tag;
 use App\Models\Menu;
+use App\Models\Page;
+use App\Enums\ContentStatus;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
@@ -37,10 +39,10 @@ class NewsController extends Controller
             'excerpt' => $article->excerpt,
             'content' => $article->content,
             'category' => $article->category,
-            'image' => $article->image,
+            'image' => asset($article->image),
             'author' => $article->user->name,
             'author_username' => $article->user->username,
-            'author_avatar' => $article->user->avatar,
+            'author_avatar' => asset($article->user->avatar),
             'author_bio' => $article->user->bio,
             'date' => $article->formatted_date, // Accessor from Carbon
             'read_time' => $article->read_time,
@@ -75,10 +77,11 @@ class NewsController extends Controller
     public function home()
     {
         // 1. Fetch headline and secondary stacked articles from DB
-        $dbHeadline = Article::with('user')->where('is_headline', true)->first() ?: Article::with('user')->first();
+        $dbHeadline = Article::with('user')->where('status', 'published')->where('is_headline', true)->first() ?: Article::with('user')->where('status', 'published')->first();
         $headline = $this->transformArticle($dbHeadline);
         
         $secondaryHeadlines = collect(Article::with('user')
+            ->where('status', 'published')
             ->where('is_secondary_headline', true)
             ->orderBy('created_at', 'desc')
             ->take(3)
@@ -87,16 +90,17 @@ class NewsController extends Controller
             ->all();
 
         // 2. Fetch video multimedia records
-        $videos = VideoStory::all()->toArray();
+        $videos = VideoStory::where('status', 'published')->get()->toArray();
 
         // 3. Fetch opinion columns
-        $opinions = Opinion::orderBy('id', 'desc')->take(3)->get()->toArray();
+        $opinions = Opinion::where('status', 'published')->orderBy('id', 'desc')->take(3)->get()->toArray();
 
         // 4. Fetch infographics
-        $infographics = Infographic::all()->toArray();
+        $infographics = Infographic::where('status', 'published')->get()->toArray();
         
         // 5. Group articles by category dynamically
         $politikArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->where('category', 'Politik')
             ->orderBy('created_at', 'desc')
             ->take(4)
@@ -105,6 +109,7 @@ class NewsController extends Controller
             ->all();
 
         $ekonomiArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->where('category', 'Ekonomi')
             ->orderBy('created_at', 'desc')
             ->take(4)
@@ -113,6 +118,7 @@ class NewsController extends Controller
             ->all();
 
         $teknologiArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->where('category', 'Teknologi')
             ->orderBy('created_at', 'desc')
             ->take(4)
@@ -121,6 +127,7 @@ class NewsController extends Controller
             ->all();
         
         $lifestyleArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->whereIn('category', ['Gaya Hidup', 'Olahraga'])
             ->orderBy('created_at', 'desc')
             ->take(4)
@@ -130,6 +137,7 @@ class NewsController extends Controller
 
         // 6. Sidebar Trending lists
         $trendingArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -137,6 +145,7 @@ class NewsController extends Controller
             ->all();
 
         $latestArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->orderBy('created_at', 'desc')
             ->get())
             ->map(fn($item) => $this->transformArticle($item))
@@ -171,6 +180,7 @@ class NewsController extends Controller
 
         // Query database
         $categoryArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->where('category', $categoryName)
             ->orderBy('created_at', 'desc')
             ->get())
@@ -179,6 +189,7 @@ class NewsController extends Controller
 
         // Sidebar Trending
         $trendingArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -193,7 +204,10 @@ class NewsController extends Controller
      */
     public function detail($slug)
     {
-        $dbArticle = Article::with(['user', 'comments', 'tags'])->where('slug', $slug)->first();
+        $dbArticle = Article::with(['user', 'tags'])
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->first();
 
         if (!$dbArticle) {
             abort(404, 'Artikel tidak ditemukan.');
@@ -213,6 +227,7 @@ class NewsController extends Controller
 
         // Get related articles (same category, excluding active one)
         $related = collect(Article::with('user')
+            ->where('status', 'published')
             ->where('category', $dbArticle->category)
             ->where('id', '!=', $dbArticle->id)
             ->take(3)
@@ -222,6 +237,7 @@ class NewsController extends Controller
 
         // Sidebar Trending
         $trendingArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -232,11 +248,41 @@ class NewsController extends Controller
     }
 
     /**
+     * AJAX Get Comments Method
+     */
+    public function getComments($slug)
+    {
+        $dbArticle = Article::with('comments')
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->first();
+
+        if (!$dbArticle) {
+            return response()->json(['error' => 'Artikel tidak ditemukan'], 404);
+        }
+
+        \Illuminate\Support\Carbon::setLocale('id');
+        $comments = $dbArticle->comments ? $dbArticle->comments->map(function($comment) {
+            return [
+                'name' => $comment->name,
+                'email' => $comment->email,
+                'body' => $comment->body,
+                'date' => $comment->created_at->translatedFormat('d M Y - H:i'),
+            ];
+        })->all() : [];
+        
+        $commentsCount = $dbArticle->comments()->count();
+
+        return view('partials.comments', compact('comments', 'commentsCount'));
+    }
+
+    /**
      * Bookmarks Page Method
      */
     public function bookmarks()
     {
         $trendingArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -262,14 +308,18 @@ class NewsController extends Controller
             ]);
 
             $results = collect(Article::with('user')
-                ->where('title', 'like', "%{$query}%")
-                ->orWhere('excerpt', 'like', "%{$query}%")
+                ->where('status', 'published')
+                ->where(function($q) use ($query) {
+                    $q->where('title', 'like', "%{$query}%")
+                      ->orWhere('excerpt', 'like', "%{$query}%");
+                })
                 ->get())
                 ->map(fn($item) => $this->transformArticle($item))
                 ->all();
         }
 
         $trendingArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -293,6 +343,7 @@ class NewsController extends Controller
 
         // Query articles of this author
         $authorArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->where('user_id', $dbUser->id)
             ->orderBy('created_at', 'desc')
             ->get())
@@ -307,12 +358,11 @@ class NewsController extends Controller
         ];
 
         // Dynamic aggregate stats direct from DB!
-        $totalViews = Article::where('user_id', $dbUser->id)->sum('views');
-        $totalArticles = Article::where('user_id', $dbUser->id)->count();
+        $totalViews = Article::where('status', 'published')->where('user_id', $dbUser->id)->sum('views');
+        $totalArticles = Article::where('status', 'published')->where('user_id', $dbUser->id)->count();
 
         $trendingArticles = collect(Article::with('user')
-            ->orderBy('views', 'desc')
-            ->take(5)
+            ->where('status', 'published')
             ->get())
             ->map(fn($item) => $this->transformArticle($item))
             ->all();
@@ -333,6 +383,45 @@ class NewsController extends Controller
             ->all();
             
         return view('pages.contact', compact('trendingArticles'));
+    }
+
+    /**
+     * Dynamic Custom Page Method
+     */
+    public function showPage($slug)
+    {
+        $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        
+        $trendingArticles = collect(Article::with('user')
+            ->orderBy('views', 'desc')
+            ->take(5)
+            ->get())
+            ->map(fn($item) => $this->transformArticle($item))
+            ->all();
+            
+        return view('pages.custom', compact('page', 'trendingArticles'));
+    }
+
+    /**
+     * Dynamic Sitemap.xml Generator
+     */
+    public function sitemap()
+    {
+        $articles = Article::where('status', 'published')->orderBy('updated_at', 'desc')->get();
+        $pages = Page::where('is_active', true)->orderBy('updated_at', 'desc')->get();
+        $tags = Tag::orderBy('updated_at', 'desc')->get();
+
+        $categories = [
+            'politik-hukum',
+            'ekonomi-bisnis',
+            'teknologi-sains',
+            'gaya-hidup'
+        ];
+
+        $content = view('pages.sitemap', compact('articles', 'pages', 'tags', 'categories'));
+
+        return response($content, 200)
+            ->header('Content-Type', 'text/xml');
     }
 
     /**
@@ -396,7 +485,7 @@ class NewsController extends Controller
      */
     public function addComment(Request $request, $slug)
     {
-        $article = Article::where('slug', $slug)->first();
+        $article = Article::where('slug', $slug)->where('status', 'published')->first();
 
         if (!$article) {
             return response()->json([
@@ -546,14 +635,15 @@ class NewsController extends Controller
             abort(404, 'Tag tidak ditemukan.');
         }
 
-        // Fetch articles associated with this tag
-        $tagArticles = collect($tag->articles()->with('user')->orderBy('created_at', 'desc')->get())
+        // Fetch articles associated with this tag (published only)
+        $tagArticles = collect($tag->articles()->where('status', 'published')->with('user')->orderBy('created_at', 'desc')->get())
             ->map(fn($item) => $this->transformArticle($item))
             ->all();
 
         $tagName = $tag->name;
 
         $trendingArticles = collect(Article::with('user')
+            ->where('status', 'published')
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -572,7 +662,7 @@ class NewsController extends Controller
             'type' => 'required|string|in:suka,terkejut,inspiratif,sedih',
         ]);
 
-        $article = Article::where('slug', $slug)->first();
+        $article = Article::where('slug', $slug)->where('status', 'published')->first();
 
         if (!$article) {
             return response()->json([

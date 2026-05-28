@@ -7,6 +7,7 @@ use App\Http\Controllers\NewsController;
 Route::get('/', [NewsController::class, 'home'])->name('news.home');
 Route::get('/category/{slug}', [NewsController::class, 'category'])->name('news.category');
 Route::get('/article/{slug}', [NewsController::class, 'detail'])->name('news.detail');
+Route::get('/article/{slug}/comments-list', [NewsController::class, 'getComments'])->name('news.comments.list');
 Route::get('/bookmarks', [NewsController::class, 'bookmarks'])->name('news.bookmarks');
 Route::get('/search', [NewsController::class, 'search'])->name('news.search');
 Route::get('/author/{username}', [NewsController::class, 'author'])->name('news.author');
@@ -24,3 +25,11 @@ Route::get('/poll/{pollId}/results', [NewsController::class, 'getPollResults'])-
 // Dynamic Tags & Reactions Routes
 Route::get('/tag/{slug}', [NewsController::class, 'tag'])->name('news.tag');
 Route::post('/article/{slug}/react', [NewsController::class, 'react'])->name('news.react');
+
+// Custom Pages Route
+Route::get('/page/{slug}', [NewsController::class, 'showPage'])->name('news.page');
+
+// Dynamic Sitemap.xml Route
+Route::get('/sitemap.xml', [NewsController::class, 'sitemap'])->name('news.sitemap');
+
+

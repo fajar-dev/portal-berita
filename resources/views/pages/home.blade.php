@@ -30,7 +30,7 @@
             <div class="hero-primary-card">
                 <div class="hero-image-wrap">
                     <span class="category-tag">{{ $headline['category'] }}</span>
-                    <img src="{{ $headline['image'] }}" alt="{{ $headline['title'] }}">
+                    <img data-src="{{ $headline['image'] }}" alt="{{ $headline['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                 </div>
                 <div class="hero-primary-content">
                     <div class="article-meta">
@@ -70,7 +70,7 @@
                             {{ $item['category'] }}
                         </span>
                         <div class="stacked-thumb">
-                            <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
+                            <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                         </div>
                         <div class="stacked-content">
                             <h3 class="stacked-title">
@@ -102,7 +102,7 @@
             @if(isset($opinions) && count($opinions) > 0)
                 @foreach($opinions as $opinion)
                     <div class="opinion-card">
-                        <img src="{{ $opinion['author_avatar'] }}" alt="{{ $opinion['author'] }}" class="opinion-author-avatar">
+                        <img data-src="{{ $opinion['author_avatar'] }}" alt="{{ $opinion['author'] }}" class="opinion-author-avatar lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                         <span class="opinion-author-name">{{ $opinion['author'] }}</span>
                         <span class="opinion-author-role">{{ $opinion['role'] }}</span>
                         <h4 class="opinion-title">{{ $opinion['title'] }}</h4>
@@ -144,6 +144,9 @@
 </div>
 <div class="portal-container"> <!-- Re-open container for standard layout -->
 
+    <!-- Home Middle Advertisement Space -->
+    @include('partials.ad', ['position' => 'home_middle'])
+
     <!-- ==========================================================================
        4. Visual Infographics Section (Horizontal Scrolling Archive) (New Section)
        ========================================================================== -->
@@ -159,7 +162,7 @@
                     <div class="infographic-card" data-image-url="{{ $info['image'] }}" data-title="{{ $info['title'] }}" style="cursor: pointer;">
                         <div class="infographic-image-wrap">
                             <span class="infographic-badge">Data Visual</span>
-                            <img src="{{ $info['image'] }}" alt="{{ $info['title'] }}">
+                            <img data-src="{{ $info['image'] }}" alt="{{ $info['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                         </div>
                         <div class="infographic-content">
                             <h4 class="infographic-title">{{ $info['title'] }}</h4>
@@ -207,9 +210,9 @@
                     @if(isset($politikArticles) && count($politikArticles) > 0)
                         @foreach($politikArticles as $item)
                             <article class="news-card">
-                                <div class="card-image-wrap">
+                                <div class="card-image-wrap lazy-image-wrap">
                                     <span class="category-tag">{{ $item['category'] }}</span>
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
+                                    <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                                 </div>
                                 <div class="card-content">
                                     <div class="article-meta">
@@ -241,9 +244,9 @@
                     @if(isset($teknologiArticles) && count($teknologiArticles) > 0)
                         @foreach($teknologiArticles as $item)
                             <article class="news-card">
-                                <div class="card-image-wrap">
+                                <div class="card-image-wrap lazy-image-wrap">
                                     <span class="category-tag">{{ $item['category'] }}</span>
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
+                                    <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                                 </div>
                                 <div class="card-content">
                                     <div class="article-meta">
@@ -275,9 +278,9 @@
                     @if(isset($ekonomiArticles) && count($ekonomiArticles) > 0)
                         @foreach($ekonomiArticles as $item)
                             <article class="news-card">
-                                <div class="card-image-wrap">
+                                <div class="card-image-wrap lazy-image-wrap">
                                     <span class="category-tag">{{ $item['category'] }}</span>
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
+                                    <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                                 </div>
                                 <div class="card-content">
                                     <div class="article-meta">
@@ -309,9 +312,9 @@
                     @if(isset($lifestyleArticles) && count($lifestyleArticles) > 0)
                         @foreach($lifestyleArticles as $item)
                             <article class="news-card">
-                                <div class="card-image-wrap">
+                                <div class="card-image-wrap lazy-image-wrap">
                                     <span class="category-tag">{{ $item['category'] }}</span>
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
+                                    <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                                 </div>
                                 <div class="card-content">
                                     <div class="article-meta">

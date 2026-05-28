@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             PollSeeder::class,
             TagSeeder::class,
             MenuSeeder::class,
+            PageSeeder::class,
         ]);
     }
 }

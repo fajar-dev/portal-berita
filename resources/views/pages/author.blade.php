@@ -7,7 +7,7 @@
 
     <!-- Premium Profile Header Box -->
     <div class="author-profile-header">
-        <img src="{{ $author['avatar'] }}" alt="{{ $author['name'] }}" class="author-profile-header-avatar">
+        <img data-src="{{ $author['avatar'] }}" alt="{{ $author['name'] }}" class="author-profile-header-avatar lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
         
         <div style="display: block;">
             <h1 class="author-profile-header-name">
@@ -61,9 +61,9 @@
                 @if(isset($authorArticles) && count($authorArticles) > 0)
                     @foreach($authorArticles as $item)
                         <article class="news-card">
-                            <div class="card-image-wrap">
+                            <div class="card-image-wrap lazy-image-wrap">
                                 <span class="category-tag">{{ $item['category'] }}</span>
-                                <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
+                                <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                             </div>
                             <div class="card-content">
                                 <div class="article-meta">

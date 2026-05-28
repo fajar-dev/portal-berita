@@ -16,6 +16,8 @@ class SettingSeeder extends Seeder
             'site_name' => 'NusaKini',
             'site_tagline' => 'Portal Berita Modern, Kredibel, & Tepercaya',
             'site_description' => 'NusaKini adalah portal media digital independen yang berfokus menyajikan jurnalisme investigatif, mendalam, dan bermutu tinggi seputar politik, ekonomi, sains, dan gaya hidup kontemporer Indonesia.',
+            'site_logo' => '/storage/settings/logo.png',
+            'site_favicon' => '/storage/settings/favicon.png',
             'office_address' => 'Gedung Nusa Media Center, Lantai 12-14, Jl. Jenderal Sudirman Kav. 21, Jakarta Selatan, 12190',
             'office_phone' => '(021) 555-0199',
             'office_fax' => '(021) 555-0200',

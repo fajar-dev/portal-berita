@@ -322,6 +322,7 @@ class ArticleSeeder extends Seeder
                 'reactions_terkejut' => 4,
                 'reactions_inspiratif' => 53,
                 'reactions_sedih' => 0,
+                'status' => 'draft',
                 'created_at' => Carbon::now()->subDays(4)
             ],
             [
@@ -366,6 +367,7 @@ class ArticleSeeder extends Seeder
                     'reactions_terkejut' => $art['reactions_terkejut'],
                     'reactions_inspiratif' => $art['reactions_inspiratif'],
                     'reactions_sedih' => $art['reactions_sedih'],
+                    'status' => $art['status'] ?? 'published',
                     'created_at' => $art['created_at'],
                     'updated_at' => $art['created_at']
                 ]

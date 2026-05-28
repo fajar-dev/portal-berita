@@ -8,10 +8,18 @@
                 <a href="{{ route('news.home') }}" class="logo-main" style="color: #fff; font-size: 2rem;">
                     @php
                         $siteName = \App\Models\Setting::get('site_name', 'NusaKini');
-                        $firstPart = substr($siteName, 0, 4);
-                        $secondPart = substr($siteName, 4);
+                        $siteLogo = \App\Models\Setting::get('site_logo');
                     @endphp
-                    {{ strtoupper($firstPart) }}<span style="color: var(--color-primary);">{{ strtoupper($secondPart) }}</span>
+                    
+                    @if($siteLogo)
+                        <img src="{{ asset($siteLogo) }}" alt="{{ $siteName }}" style="max-height: 40px; width: auto; object-fit: contain;">
+                    @else
+                        @php
+                            $firstPart = substr($siteName, 0, 4);
+                            $secondPart = substr($siteName, 4);
+                        @endphp
+                        {{ strtoupper($firstPart) }}<span style="color: var(--color-primary);">{{ strtoupper($secondPart) }}</span>
+                    @endif
                 </a>
                 <p class="footer-desc">
                     {{ \App\Models\Setting::get('site_description', 'NusaKini adalah portal media digital independen...') }}
@@ -60,6 +68,17 @@
             <span class="copyright-text">
                 &copy; {{ date('Y') }} NusaKini. Seluruh Hak Cipta Dilindungi Undang-Undang.
             </span>
+            
+            <!-- Custom Dynamic Static Pages Links -->
+            <div class="footer-bottom-pages" style="display: flex; gap: 15px; font-size: 0.78rem; font-weight: 700; color: hsl(220, 10%, 60%); flex-wrap: wrap; justify-content: center;">
+                <a href="{{ route('news.page', 'tentang-kami') }}" class="footer-page-link">Tentang Kami</a>
+                <span>•</span>
+                <a href="{{ route('news.page', 'kebijakan-privasi') }}" class="footer-page-link">Kebijakan Privasi</a>
+                <span>•</span>
+                <a href="{{ route('news.page', 'ketentuan-layanan') }}" class="footer-page-link">Ketentuan Layanan</a>
+                <span>•</span>
+                <a href="{{ route('news.page', 'redaksi') }}" class="footer-page-link">Redaksi</a>
+            </div>
             
             <!-- Social Networks Links with Micro interactions -->
             <div class="social-links">

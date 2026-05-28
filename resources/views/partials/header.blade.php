@@ -34,14 +34,27 @@
 <!-- Main Logo & Brand Banner Bar -->
 <div class="brand-section">
     <div class="portal-container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-        <a href="{{ route('news.home') }}" class="logo-main">
-            @php
-                $siteName = \App\Models\Setting::get('site_name', 'NusaKini');
-                $firstPart = substr($siteName, 0, 4); // "NUSA"
-                $secondPart = substr($siteName, 4); // "KINI"
-            @endphp
-            {{ strtoupper($firstPart) }}<span>{{ strtoupper($secondPart) }}</span>
-        </a>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+            <a href="{{ route('news.home') }}" class="logo-main" style="line-height: 1;">
+                @php
+                    $siteName = \App\Models\Setting::get('site_name', 'NusaKini');
+                    $siteLogo = \App\Models\Setting::get('site_logo');
+                @endphp
+                
+                @if($siteLogo)
+                    <img src="{{ asset($siteLogo) }}" alt="{{ $siteName }}" style="max-height: 45px; width: auto; object-fit: contain;">
+                @else
+                    @php
+                        $firstPart = substr($siteName, 0, 4); // "NUSA"
+                        $secondPart = substr($siteName, 4); // "KINI"
+                    @endphp
+                    {{ strtoupper($firstPart) }}<span>{{ strtoupper($secondPart) }}</span>
+                @endif
+            </a>
+            <span class="logo-tagline" style="font-size: 0.65rem; font-weight: 800; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-family: var(--font-heading); line-height: 1.2;">
+                {{ \App\Models\Setting::get('site_tagline', 'Portal Berita Modern, Kredibel, & Tepercaya') }}
+            </span>
+        </div>
         
         <!-- Interactive Search Bar -->
         <div class="search-bar-container">
