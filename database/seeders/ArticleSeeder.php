@@ -44,8 +44,8 @@ class ArticleSeeder extends Seeder
                     </ul>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?q=80&w=1200" alt="Solar Panels farm" style="border-radius:12px; width:100%;">
-                        <figcaption>Ladang panel surya terapung yang dikembangkan di atas bendungan sebagai pilar EBT masa depan. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_1_figure.jpg" alt="Solar Panels farm" style="border-radius:12px; width:100%;">
+                        <figcaption>Ladang panel surya terapung yang dikembangkan di atas bendungan sebagai pilar EBT masa depan. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Tantangan Pembiayaan dan Dukungan Finansial</h3>
@@ -53,7 +53,7 @@ class ArticleSeeder extends Seeder
                     <p>Untuk mengatasi hal tersebut, pemerintah menggandeng konsorsium lembaga pembiayaan internasional serta menerbitkan obligasi hijau (*Green Bond*) di bursa efek internasional. Hal ini diharapkan mampu menekan biaya modal (*cost of capital*) bagi para pengembang proyek EBT swasta di dalam negeri.</p>
                 ',
                 'category' => 'Politik',
-                'image' => 'https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=800',
+                'image' => '/storage/articles/article_1.jpg',
                 'user_id' => $andika->id,
                 'read_time' => '5 menit',
                 'views' => 1845,
@@ -82,15 +82,15 @@ class ArticleSeeder extends Seeder
                     <p>Ekspansi pertumbuhan ini juga didukung kuat oleh perluasan infrastruktur internet serat optik nasional serta perluasan jaringan 5G di wilayah luar pulau Jawa. Selain itu, inisiatif integrasi QRIS lintas negara (*cross-border QRIS*) yang kini mencakup Malaysia, Thailand, dan Singapura turut mendongkrak transaksi ekspor dari UMKM kreatif lokal yang sering dikunjungi oleh turis asing.</p>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=1200" alt="Digital payments retail" style="border-radius:12px; width:100%;">
-                        <figcaption>Adopsi sistem pembayaran non-tunai di pasar retail menjadi pemicu utama akselerasi ekonomi digital. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_2_figure.jpg" alt="Digital payments retail" style="border-radius:12px; width:100%;">
+                        <figcaption>Adopsi sistem pembayaran non-tunai di pasar retail menjadi pemicu utama akselerasi ekonomi digital. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Peran Fintech dalam Pembiayaan Produktif</h3>
                     <p>Akses pembiayaan modal kerja yang selama ini menjadi kendala klasik UMKM kini mulai teratasi dengan kehadiran industri teknologi finansial (*fintech lending*) yang kredibel dan berizin resmi. Dengan analisis credit scoring berbasis kecerdasan buatan, pelaku usaha kecil kini dapat memperoleh pinjaman modal produktif tanpa agunan konvensional hanya dalam waktu hitungan jam saja.</p>
                 ',
                 'category' => 'Ekonomi',
-                'image' => 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=800',
+                'image' => '/storage/articles/article_2.jpg',
                 'user_id' => $siti->id,
                 'read_time' => '4 menit',
                 'views' => 1420,
@@ -119,15 +119,15 @@ class ArticleSeeder extends Seeder
                     <p>Selain diagnosis pemindaian organ, AI juga dimanfaatkan untuk memetakan rangkaian genomik (*genomic sequencing*) pasien dalam hitungan menit saja. Hal ini membuka jalan bagi terapi kedokteran personal (*personalized medicine*), di mana obat-obatan dan porsi perawatan dirancang secara spesifik berdasarkan profil genetik unik masing-masing individu untuk menekan risiko efek samping obat.</p>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1200" alt="Doctor looking at digital scan" style="border-radius:12px; width:100%;">
-                        <figcaption>Teknologi diagnosis medis terbantu AI mempercepat pengambilan keputusan krusial di ruang operasi. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_3_figure.jpg" alt="Doctor looking at digital scan" style="border-radius:12px; width:100%;">
+                        <figcaption>Teknologi diagnosis medis terbantu AI mempercepat pengambilan keputusan krusial di ruang operasi. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Isu Etika dan Keamanan Data Pasien</h3>
                     <p>Kendati menawarkan revolusi luar biasa, kemajuan ini menyisakan diskusi mendalam seputar aspek etika serta kerahasiaan data rekam medis pasien. Komisi Kedokteran Nasional terus merumuskan batas-batas kepatuhan regulasi yang ketat agar pemanfaatan data pelatihan medis terjamin anonimitasnya dan bebas dari risiko kebocoran data siber.</p>
                 ',
                 'category' => 'Teknologi',
-                'image' => 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?q=80&w=800',
+                'image' => '/storage/articles/article_3.jpg',
                 'user_id' => $budi->id,
                 'read_time' => '6 menit',
                 'views' => 2130,
@@ -156,15 +156,15 @@ class ArticleSeeder extends Seeder
                     <p>Aspek nutrisi juga tidak luput dari pembaruan metodologi sains. Setiap atlet kini memiliki koki gizi personal yang merancang diet harian berdasarkan analisis laju metabolisme, kadar asam laktat darah pasca-latihan, hingga pola tidur (*sleep tracking*) mereka. Hal ini memastikan proses pemulihan fisik (*recovery*) berjalan maksimal sebelum sesi latihan berikutnya.</p>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=1200" alt="Athlete training" style="border-radius:12px; width:100%;">
-                        <figcaption>Peralatan latihan berteknologi tinggi mengukur kapasitas kardiovaskular atlet Pelatnas. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_4_figure.jpg" alt="Athlete training" style="border-radius:12px; width:100%;">
+                        <figcaption>Peralatan latihan berteknologi tinggi mengukur kapasitas kardiovaskular atlet Pelatnas. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Dukungan Psikologi Olahraga</h3>
                     <p>Selain optimalisasi fisik, sport science juga mencakup aspek kekuatan mental (*sports psychology*). Latihan simulasi konsentrasi menggunakan sistem realitas virtual (VR) diterapkan untuk membiasakan atlet menghadapi tekanan psikologis kebisingan penonton stadion, melatih fokus pengambilan keputusan krusial di momen genting pertandingan.</p>
                 ',
                 'category' => 'Olahraga',
-                'image' => 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800',
+                'image' => '/storage/articles/article_4.jpg',
                 'user_id' => $dwi->id,
                 'read_time' => '5 menit',
                 'views' => 1105,
@@ -193,15 +193,15 @@ class ArticleSeeder extends Seeder
                     <p>Tumbuhnya tren ini mendorong lahirnya resort-resort butik baru berkonsep arsitektur bambu ramah lingkungan (*eco-resort*). Menariknya, tempat-tempat ini menerapkan aturan ketat seperti ketiadaan televisi di dalam kamar, pembatasan koneksi internet pada jam tertentu, serta penyajian menu makanan organik vegan (*farm-to-table*) yang bahan bakunya langsung dipanen dari kebun warga lokal di sekitar resort.</p>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=1200" alt="Yoga mediation at resort" style="border-radius:12px; width:100%;">
-                        <figcaption>Retret yoga luar ruangan di perbukitan Ubud yang menawarkan ketenangan batin mutlak. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_5_figure.jpg" alt="Yoga mediation at resort" style="border-radius:12px; width:100%;">
+                        <figcaption>Retret yoga luar ruangan di perbukitan Ubud yang menawarkan ketenangan batin mutlak. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Kontribusi bagi Perekonomian Warga Lokal</h3>
                     <p>Aspek terpenting dari wisata kebugaran ini adalah keterlibatan langsung masyarakat adat. Resort mengajak para pemuka spiritual lokal untuk memimpin upacara pembersihan diri tradisional (*melukat*), mempekerjakan ahli pengobatan herbal daerah, serta membeli bahan pangan lokal. Pola kemitraan ini terbukti menjaga kelestarian budaya sekaligus mendongkrak kesejahteraan ekonomi warga desa secara langsung.</p>
                 ',
                 'category' => 'Gaya Hidup',
-                'image' => 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800',
+                'image' => '/storage/articles/article_5.jpg',
                 'user_id' => $laras->id,
                 'read_time' => '4 menit',
                 'views' => 1560,
@@ -230,15 +230,15 @@ class ArticleSeeder extends Seeder
                     <p>Sebagai timbal balik dari aliran dana hibah hijau tersebut, negara berkembang berkomitmen untuk mempercepat target penutupan pembangkit listrik tenaga uap (PLTU) batubara dalam satu dekade mendatang. Delegasi Indonesia menyambut baik skema ini dan menyebutnya akan melipatgandakan program pensiun dini PLTU batubara nasional yang sedang dikerjakan.</p>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1618042164219-62c820f10723?q=80&w=1200" alt="Wind turbines at sunset" style="border-radius:12px; width:100%;">
-                        <figcaption>Jaringan kincir angin lepas pantai yang akan masif dikembangkan berkat kucuran dana KTT Iklim Global. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_6_figure.jpg" alt="Wind turbines at sunset" style="border-radius:12px; width:100%;">
+                        <figcaption>Jaringan kincir angin lepas pantai yang akan masif dikembangkan berkat kucuran dana KTT Iklim Global. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Sanksi Ketat bagi Pelanggar Kuota Emisi Carbon</h3>
                     <p>KTT kali ini juga menyepakati pembentukan badan pengawas iklim independen PBB yang berhak menjatuhkan sanksi hambatan perdagangan internasional bagi negara industri yang terbukti melanggar batas kuota pelepasan emisi karbon tahunan mereka. Langkah penegakan sanksi ini diyakini akan mendesak industri manufaktur global untuk segera memodernisasi pabrik mereka menjadi netral karbon.</p>
                 ',
                 'category' => 'Internasional',
-                'image' => 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800',
+                'image' => '/storage/articles/article_6.jpg',
                 'user_id' => $andika->id,
                 'read_time' => '5 menit',
                 'views' => 1970,
@@ -267,15 +267,15 @@ class ArticleSeeder extends Seeder
                     <p>Latensi nol mutlak yang ditawarkan 6G memiliki signifikansi luar biasa pada sektor penyelamatan jiwa. Para dokter bedah spesialis akan dapat mengoperasikan lengan robot medis secara real-time dari jarak ribuan kilometer tanpa khawatir adanya jeda transmisi (*delay*). Hal serupa juga menjamin keamanan penuh bagi koordinasi jutaan mobil otonom tanpa pengemudi di jalan raya perkotaan secara simultan.</p>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1200" alt="Tech engineer at network servers" style="border-radius:12px; width:100%;">
-                        <figcaption>Laboratorium pengujian transmisi frekuensi tinggi untuk riset pemancaran sinyal telekomunikasi 6G. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_7_figure.jpg" alt="Tech engineer at network servers" style="border-radius:12px; width:100%;">
+                        <figcaption>Laboratorium pengujian transmisi frekuensi tinggi untuk riset pemancaran sinyal telekomunikasi 6G. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Tantangan Pemancaran Frekuensi Terahertz</h3>
                     <p>Kendati demikian, tantangan fisik pengembangan 6G terletak pada transmisi gelombang frekuensi sangat tinggi (Terahertz). Gelombang ini memiliki kelemahan jarak pancar yang sangat pendek serta mudah terhalang oleh material padat seperti dinding gedung beton. Para peneliti terus menguji material baru antena berbasis nanoteknologi guna memperluas pancaran sinyal di area urban.</p>
                 ',
                 'category' => 'Teknologi',
-                'image' => 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800',
+                'image' => '/storage/articles/article_7.jpg',
                 'user_id' => $budi->id,
                 'read_time' => '5 menit',
                 'views' => 1780,
@@ -304,15 +304,15 @@ class ArticleSeeder extends Seeder
                     <p>Kementerian Keuangan menghitung bahwa setiap perpindahan 10% pengguna kendaraan pribadi ke moda transportasi massal berbasis listrik akan menghemat dana subsidi energi BBM negara hingga puluhan triliun rupiah per tahun. Dana hasil efisiensi ini nantinya akan dialihkan langsung untuk peningkatan anggaran pendidikan vokasi serta fasilitas kesehatan masyarakat miskin.</p>
                     
                     <figure>
-                        <img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?q=80&w=1200" alt="Mass transit trains" style="border-radius:12px; width:100%;">
-                        <figcaption>Jaringan kereta cepat komuter perkotaan ramah lingkungan sebagai masa depan mobilitas masyarakat urban. (Foto: Unsplash)</figcaption>
+                        <img src="/storage/articles/article_8_figure.jpg" alt="Mass transit trains" style="border-radius:12px; width:100%;">
+                        <figcaption>Jaringan kereta cepat komuter perkotaan ramah lingkungan sebagai masa depan mobilitas masyarakat urban. (Foto: NusaKini)</figcaption>
                     </figure>
 
                     <h3>Kerjasama Pendanaan Swasta Lewat Skema KPBU</h3>
                     <p>Mengingat anggaran pembangunan yang sangat fantastis, proyek transportasi massal ini tidak hanya mengandalkan suntikan dana kas negara murni. Pemerintah masif menerapkan skema Kerjasama Pemerintah dan Badan Usaha (KPBU) guna menarik minat investasi dana pensiun asing jangka panjang untuk ikut berpartisipasi mengelola stasiun modern berkonsep TOD (*Transit Oriented Development*).</p>
                 ',
                 'category' => 'Ekonomi',
-                'image' => 'https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?q=80&w=800',
+                'image' => '/storage/articles/article_8.jpg',
                 'user_id' => $siti->id,
                 'read_time' => '5 menit',
                 'views' => 1250,
@@ -334,7 +334,7 @@ class ArticleSeeder extends Seeder
                     <p>Kemenangan mutlak ini menjadi angin segar di tengah sorotan publik atas penurunan performa atlet senior di beberapa turnamen dunia sebelumnya. Kepala Bidang Pembinaan Prestasi menegaskan bahwa restrukturisasi sistem rekrutmen berbasis pemetaan genetik dan sensor gerak terbukti berhasil menjaring talenta emas sejak usia dini.</p>
                 ',
                 'category' => 'Olahraga',
-                'image' => 'https://images.unsplash.com/photo-1521537634199-67398c740cc9?q=80&w=800',
+                'image' => '/storage/articles/article_9.jpg',
                 'user_id' => $dwi->id,
                 'read_time' => '3 menit',
                 'views' => 930,

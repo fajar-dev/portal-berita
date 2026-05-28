@@ -20,6 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 7. Newsletter and Feedback Interactive Forms
     initFormInteractions();
+
+    // 8. Dynamic Financial Market Ticker (fluctuating live rates)
+    initFinancialTicker();
+
+    // 9. Interactive Weather Widget (with topbar weather syncing)
+    initInteractiveWeather();
+
+    // 10. Premium Global Media Lightbox Modals
+    initMediaModals();
 });
 
 /* ==========================================================================
@@ -614,3 +623,287 @@ function showToast(message, isError = false) {
         toast.style.opacity = '0';
     }, 4500);
 }
+
+/* ==========================================================================
+   8. Live Financial Ticker Engine
+   ========================================================================== */
+function initFinancialTicker() {
+    const tickerContainer = document.getElementById('financial-ticker-bar');
+    if (!tickerContainer) return;
+
+    let stocks = [
+        { name: 'IHSG', value: 7128.45, pct: 0.35, isUp: true, decimals: 2 },
+        { name: 'USD/IDR', value: 16210, pct: 0.12, isUp: true, decimals: 0, prefix: 'Rp ' },
+        { name: 'EUR/IDR', value: 17540, pct: -0.08, isUp: false, decimals: 0, prefix: 'Rp ' },
+        { name: 'BTC/IDR', value: 1120400000, pct: -1.45, isUp: false, decimals: 0, prefix: 'Rp ' },
+        { name: 'EMAS', value: 1340000, pct: 0.75, isUp: true, decimals: 0, prefix: 'Rp ', suffix: '/g' }
+    ];
+
+    let currentIndex = 0;
+
+    function renderStock(index) {
+        const stock = stocks[index];
+        const pctSign = stock.isUp ? '+' : '';
+        const statusClass = stock.isUp ? 'stock-up' : 'stock-down';
+        const arrowIcon = stock.isUp 
+            ? `<svg style="width: 10px; height: 10px; display:inline-block;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 3.293a1 1 0 01.707.293l5 5a1 1 0 01-1.414 1.414L13 6.414V17a1 1 0 11-2 0V6.414L7.707 10.707a1 1 0 01-1.414-1.414l5-5A1 1 0 0112 3.293z" clip-rule="evenodd"/></svg>`
+            : `<svg style="width: 10px; height: 10px; display:inline-block;" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 16.707a1 1 0 01-.707-.293l-5-5a1 1 0 011.414-1.414L11 13.586V3a1 1 0 112 0v10.586l3.293-3.293a1 1 0 111.414 1.414l-5 5a1 1 0 01-.707.293z" clip-rule="evenodd"/></svg>`;
+
+        const valStr = (stock.prefix || '') + stock.value.toLocaleString('id-ID', { minimumFractionDigits: stock.decimals, maximumFractionDigits: stock.decimals }) + (stock.suffix || '');
+
+        // Apply smooth transition properties
+        tickerContainer.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        // Fade out & slide up
+        tickerContainer.style.opacity = '0';
+        tickerContainer.style.transform = 'translateY(-5px)';
+
+        setTimeout(() => {
+            tickerContainer.innerHTML = `
+                <div class="ticker-stock-item" style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: hsl(220, 10%, 65%); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Live Pasar:</span>
+                    <span style="font-weight: 700; color: #fff; font-size: 0.72rem;">${stock.name}</span>
+                    <span style="font-weight: 800; color: #fff; font-size: 0.72rem;">${valStr}</span>
+                    <span class="${statusClass}" style="display:inline-flex; align-items:center; gap:2px; font-size: 0.72rem;">
+                        ${arrowIcon}
+                        <span>${pctSign}${stock.pct.toFixed(2)}%</span>
+                    </span>
+                </div>
+            `;
+            // Fade in & slide down to original position
+            tickerContainer.style.opacity = '1';
+            tickerContainer.style.transform = 'translateY(0)';
+        }, 350);
+    }
+
+    // Fluctuates stock values slightly to simulate live feed
+    function fluctuateStocks() {
+        stocks.forEach(stock => {
+            const multiplier = (Math.random() - 0.5) * 0.002; 
+            stock.value += stock.value * multiplier;
+            stock.pct += multiplier * 12;
+            stock.isUp = stock.pct > 0;
+        });
+    }
+
+    renderStock(0);
+
+    // Rotate and fluctuate every 3.5 seconds
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % stocks.length;
+        fluctuateStocks();
+        renderStock(currentIndex);
+    }, 3500);
+}
+
+/* ==========================================================================
+   9. Interactive Weather Widget with City Syncing
+   ========================================================================== */
+function initInteractiveWeather() {
+    const citySelector = document.getElementById('weather-city-selector');
+    const cityNameEl = document.getElementById('weather-city-name');
+    const tempValEl = document.getElementById('weather-temp-val');
+    const condValEl = document.getElementById('weather-condition-val');
+    const humidityEl = document.getElementById('weather-humidity-val');
+    const windEl = document.getElementById('weather-wind-val');
+    const mainIconEl = document.getElementById('weather-main-icon');
+    const infoBox = document.querySelector('.weather-info-box');
+
+    // Top bar elements to sync
+    const topbarTextEl = document.getElementById('topbar-weather-text');
+    const topbarIconEl = document.getElementById('topbar-weather-icon');
+
+    if (!citySelector) return;
+
+    // Indonesian major cities weather mock data
+    const weatherData = {
+        jakarta: {
+            fullName: 'DKI Jakarta',
+            temp: '31°C',
+            condition: 'Cerah Berawan',
+            humidity: '65%',
+            wind: '12 km/h',
+            iconPath: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />` // Sun icon
+        },
+        surabaya: {
+            fullName: 'Surabaya, Jatim',
+            temp: '33°C',
+            condition: 'Cerah Menyengat',
+            humidity: '58%',
+            wind: '16 km/h',
+            iconPath: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />` // Sun icon
+        },
+        bandung: {
+            fullName: 'Bandung, Jabar',
+            temp: '24°C',
+            condition: 'Hujan Ringan',
+            humidity: '82%',
+            wind: '8 km/h',
+            iconPath: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-1 2m4-2l-1 2m4-2l-1 2" />` // Cloud + Rain icon
+        },
+        medan: {
+            fullName: 'Medan, Sumut',
+            temp: '29°C',
+            condition: 'Berawan Tebal',
+            humidity: '74%',
+            wind: '10 km/h',
+            iconPath: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />` // Cloud icon
+        },
+        bali: {
+            fullName: 'Denpasar, Bali',
+            temp: '30°C',
+            condition: 'Cerah Berangin',
+            humidity: '70%',
+            wind: '22 km/h',
+            iconPath: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />` // Sun icon
+        }
+    };
+
+    function updateWeather(cityKey) {
+        const data = weatherData[cityKey];
+        if (!data) return;
+
+        // Smooth opacity transition
+        if (infoBox) {
+            infoBox.style.opacity = '0';
+            infoBox.style.transform = 'translateY(5px)';
+        }
+
+        setTimeout(() => {
+            // Update sidebar elements
+            if (cityNameEl) cityNameEl.textContent = data.fullName;
+            if (tempValEl) tempValEl.textContent = data.temp;
+            if (condValEl) condValEl.textContent = data.condition;
+            if (humidityEl) humidityEl.textContent = data.humidity;
+            if (windEl) windEl.textContent = data.wind;
+            if (mainIconEl) mainIconEl.innerHTML = data.iconPath;
+
+            // Sync with Top bar display
+            if (topbarTextEl) {
+                // Shorten name if it's too long
+                const shortCity = cityKey === 'bali' ? 'Bali' : cityKey.charAt(0).toUpperCase() + cityKey.slice(1);
+                topbarTextEl.textContent = `${shortCity}, ${data.temp}`;
+            }
+            if (topbarIconEl) {
+                topbarIconEl.innerHTML = data.iconPath;
+            }
+
+            // Fade back in
+            if (infoBox) {
+                infoBox.style.opacity = '1';
+                infoBox.style.transform = 'translateY(0)';
+            }
+        }, 300);
+    }
+
+    citySelector.addEventListener('change', (e) => {
+        updateWeather(e.target.value);
+    });
+}
+
+/* ==========================================================================
+   10. Premium Global Media Lightbox Modals (YouTube Video & Infographic Zoom)
+   ========================================================================== */
+function initMediaModals() {
+    const modal = document.getElementById('media-modal');
+    if (!modal) return;
+
+    const backdrop = modal.querySelector('.media-modal-backdrop');
+    const closeBtn = modal.querySelector('.media-modal-close');
+    const videoWrapper = document.getElementById('modal-video-wrapper');
+    const imageWrapper = document.getElementById('modal-image-wrapper');
+    const youtubeIframe = document.getElementById('modal-youtube-iframe');
+    const infographicImg = document.getElementById('modal-infographic-img');
+    const infographicTitle = document.getElementById('modal-infographic-title');
+
+    function openModal() {
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = ''; // Restore background scrolling
+        
+        // Stop YouTube video instantly by resetting src
+        if (youtubeIframe) {
+            youtubeIframe.src = '';
+        }
+        
+        // Fade contents smoothly before hiding wrappers
+        setTimeout(() => {
+            if (videoWrapper) videoWrapper.style.display = 'none';
+            if (imageWrapper) imageWrapper.style.display = 'none';
+            if (infographicImg) infographicImg.src = '';
+            if (infographicTitle) infographicTitle.textContent = '';
+        }, 400);
+    }
+
+    // Bind click events on video title links to open larger light modal
+    const openVideoModalLinks = document.querySelectorAll('.open-video-modal');
+    openVideoModalLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const card = link.closest('.video-card');
+            if (!card) return;
+            const iframeLink = card.getAttribute('data-iframe-link');
+            if (!iframeLink) return;
+
+            // Activate video wrapper and load embed source with autoplay active
+            if (videoWrapper) videoWrapper.style.display = 'block';
+            if (imageWrapper) imageWrapper.style.display = 'none';
+
+            if (youtubeIframe) {
+                // Safely append autoplay and modestbranding parameters
+                const autoplayLink = iframeLink.includes('?') 
+                    ? `${iframeLink}&autoplay=1&modestbranding=1` 
+                    : `${iframeLink}?autoplay=1&modestbranding=1`;
+                youtubeIframe.src = autoplayLink;
+            }
+
+            openModal();
+        });
+    });
+
+    // Bind click events on infographic cards
+    const infographicCards = document.querySelectorAll('.infographic-card');
+    infographicCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            const imageUrl = card.getAttribute('data-image-url');
+            const title = card.getAttribute('data-title');
+            if (!imageUrl) return;
+
+            // Activate image wrapper and load visual source
+            if (videoWrapper) videoWrapper.style.display = 'none';
+            if (imageWrapper) imageWrapper.style.display = 'flex';
+
+            if (infographicImg) {
+                infographicImg.src = imageUrl;
+            }
+            if (infographicTitle) {
+                infographicTitle.textContent = title || 'Visualisasi Jurnalisme Data';
+            }
+
+            openModal();
+        });
+    });
+
+    // Add event listeners for modal dismissals
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+
+    if (backdrop) {
+        backdrop.addEventListener('click', closeModal);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+}
+

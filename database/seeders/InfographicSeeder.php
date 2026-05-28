@@ -15,18 +15,23 @@ class InfographicSeeder extends Seeder
         $infographics = [
             [
                 'title' => 'Peta Target Transisi Energi Baru Terbarukan Indonesia 2026 - 2060',
-                'image' => 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=600',
+                'image' => '/storage/infographics/ebt.jpg',
                 'slug' => 'peta-target-transisi-ebt-indonesia'
             ],
             [
                 'title' => 'Infografis: Evolusi Jaringan Telekomunikasi Nirkabel 1G Menuju Era 6G',
-                'image' => 'https://images.unsplash.com/photo-1544256718-3bcf237f3974?q=80&w=600',
+                'image' => '/storage/infographics/telecom.jpg',
                 'slug' => 'evolusi-jaringan-nirkabel-6g'
             ],
             [
                 'title' => 'Rute Kereta Cepat Lintas Trans-Sumatera: Rencana Megaproyek Dekade Ini',
-                'image' => 'https://images.unsplash.com/photo-1515162305285-0293e4767cc2?q=80&w=600',
+                'image' => '/storage/infographics/train.jpg',
                 'slug' => 'rute-kereta-cepat-trans-sumatera'
+            ],
+            [
+                'title' => 'Infografis: Potensi Pertumbuhan Sektor Ekonomi Digital & FinTech Nasional',
+                'image' => '/storage/infographics/dashboard.jpg',
+                'slug' => 'potensi-pertumbuhan-ekonomi-digital-fintech'
             ]
         ];
 

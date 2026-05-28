@@ -41,5 +41,32 @@
     <!-- Unique Identifier element for automation/browser testing -->
     <div id="nusakini-app-loaded" style="display:none;" data-version="1.0" data-theme-engine="clean-light"></div>
 
+    <!-- Global Premium Media Lightbox Modal -->
+    <div id="media-modal" class="media-modal" aria-hidden="true" role="dialog">
+        <div class="media-modal-backdrop"></div>
+        <div class="media-modal-container">
+            <button class="media-modal-close" aria-label="Tutup Media">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 20px; height: 20px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="media-modal-content">
+                <!-- YouTube Video Element Container -->
+                <div id="modal-video-wrapper" class="modal-media-wrapper" style="display: none;">
+                    <div class="video-iframe-aspect">
+                        <iframe id="modal-youtube-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <!-- Infographic Image Element Container -->
+                <div id="modal-image-wrapper" class="modal-media-wrapper" style="display: none;">
+                    <div class="infographic-zoom-wrap">
+                        <img id="modal-infographic-img" src="" alt="Infografis">
+                    </div>
+                    <h3 id="modal-infographic-title" class="modal-media-caption"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

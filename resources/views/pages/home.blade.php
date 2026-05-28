@@ -65,24 +65,24 @@
         <div class="hero-secondary-stack">
             @if(isset($secondaryHeadlines) && count($secondaryHeadlines) > 0)
                 @foreach($secondaryHeadlines as $item)
-                    <div class="stacked-card">
+                    <a href="{{ route('news.detail', $item['slug']) }}" class="stacked-card">
+                        <span class="stacked-category">
+                            {{ $item['category'] }}
+                        </span>
                         <div class="stacked-thumb">
                             <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}">
                         </div>
                         <div class="stacked-content">
-                            <span style="font-size: 0.65rem; color: var(--color-primary); font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 4px; letter-spacing: 0.5px;">
-                                {{ $item['category'] }}
-                            </span>
                             <h3 class="stacked-title">
-                                <a href="{{ route('news.detail', $item['slug']) }}">{{ $item['title'] }}</a>
+                                {{ $item['title'] }}
                             </h3>
-                            <div class="article-meta" style="margin-bottom: 0; font-size: 0.72rem; gap: 8px;">
+                            <div class="stacked-card-meta">
                                 <span>{{ $item['date'] }}</span>
                                 <span>•</span>
                                 <span>{{ $item['read_time'] }}</span>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             @endif
         </div>
@@ -127,21 +127,13 @@
         <div class="video-grid">
             @if(isset($videos) && count($videos) > 0)
                 @foreach($videos as $video)
-                    <div class="video-card">
+                    <div class="video-card" data-iframe-link="{{ $video['iframe_link'] ?? '' }}">
                         <div class="video-thumb-wrap">
-                            <img src="{{ $video['image'] }}" alt="{{ $video['title'] }}">
-                            <div class="play-btn-overlay">
-                                <svg style="width: 22px; height: 22px; fill: currentColor; margin-left: 2px;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
-                            </div>
-                            <span style="position: absolute; bottom: 12px; right: 12px; background-color: rgba(0,0,0,0.8); color: #fff; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: var(--border-radius-sm);">
-                                {{ $video['duration'] }}
-                            </span>
+                            <iframe src="{{ $video['iframe_link'] ?? '' }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: var(--border-radius-sm);"></iframe>
                         </div>
                         <div class="video-content">
                             <h4 class="video-title">
-                                <a href="#">{{ $video['title'] }}</a>
+                                <a href="javascript:void(0);" class="open-video-modal">{{ $video['title'] }}</a>
                             </h4>
                         </div>
                     </div>
@@ -164,7 +156,7 @@
         <div class="infographics-scroll-container">
             @if(isset($infographics) && count($infographics) > 0)
                 @foreach($infographics as $info)
-                    <div class="infographic-card">
+                    <div class="infographic-card" data-image-url="{{ $info['image'] }}" data-title="{{ $info['title'] }}" style="cursor: pointer;">
                         <div class="infographic-image-wrap">
                             <span class="infographic-badge">Data Visual</span>
                             <img src="{{ $info['image'] }}" alt="{{ $info['title'] }}">
@@ -188,7 +180,7 @@
             <p class="premium-banner-desc">Berlangganan NusaKini Premium untuk mendapatkan laporan investigatif tanpa batas, analisis ekonomi makro mingguan, serta arsip infografis resolusi tinggi bebas gangguan.</p>
         </div>
         <div class="premium-banner-right">
-            <a href="#" class="btn-premium-cta">
+            <a href="{{ \App\Models\Setting::get('epaper_link', '#') }}" target="_blank" class="btn-premium-cta">
                 <span>Mulai Berlangganan</span>
                 <svg style="width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

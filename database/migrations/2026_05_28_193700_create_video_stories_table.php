@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('video_stories', function (Blueprint $table) {
             $table->id();
-            $table->string('slug')->unique();
             $table->string('title');
-            $table->string('image');
-            $table->string('duration');
+            $table->text('iframe_link');
             $table->timestamps();
         });
     }

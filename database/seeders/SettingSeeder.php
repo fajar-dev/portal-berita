@@ -24,6 +24,7 @@ class SettingSeeder extends Seeder
             'facebook_url' => 'https://facebook.com/nusakini',
             'twitter_url' => 'https://twitter.com/nusakini',
             'instagram_url' => 'https://instagram.com/nusakini',
+            'epaper_link' => 'https://epaper.nusakini.com/edisi/terbaru.pdf',
         ];
 
         foreach ($settings as $key => $value) {

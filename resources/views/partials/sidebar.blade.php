@@ -95,7 +95,57 @@
         </div>
     @endif
 
-    <!-- 3. Premium Editorial Promo Card (Bespoke Ad) -->
+    <!-- 3. Cuaca Pintar Interaktif (Interactive Weather Widget) -->
+    <div class="widget-card weather-widget">
+        <!-- Weather Card Accent -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background-color: rgba(255, 255, 255, 0.25);"></div>
+        
+        <div class="weather-widget-header">
+            <h4 class="weather-widget-title">
+                Cuaca Nusantara
+            </h4>
+            <!-- City Selection Dropdown Selector -->
+            <select id="weather-city-selector" aria-label="Pilih Kota">
+                <option value="jakarta">Jakarta</option>
+                <option value="surabaya">Surabaya</option>
+                <option value="bandung">Bandung</option>
+                <option value="medan">Medan</option>
+                <option value="bali">Denpasar (Bali)</option>
+            </select>
+        </div>
+
+        <div class="weather-info-box">
+            <div class="weather-temp-wrap" style="display: flex; flex-direction: column;">
+                <span class="weather-city-label" id="weather-city-name">DKI JAKARTA</span>
+                <span class="weather-temp" id="weather-temp-val">31°C</span>
+                <span class="weather-condition" id="weather-condition-val">Cerah Berawan</span>
+            </div>
+            
+            <!-- Dynamic Big Weather Icon -->
+            <div class="weather-icon-wrap">
+                <svg id="weather-main-icon" style="width: 38px; height: 38px; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="weather-footer">
+            <div class="weather-footer-item">
+                <svg style="width: 13px; height: 13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+                <span>Kelembaban: <span id="weather-humidity-val">65%</span></span>
+            </div>
+            <div class="weather-footer-item">
+                <svg style="width: 13px; height: 13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+                <span>Angin: <span id="weather-wind-val">12 km/h</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Premium Editorial Promo Card (Bespoke Ad) -->
     <div class="widget-card" style="background-color: var(--color-dark); color: #fff; text-align: center; border: none; overflow: hidden; position: relative;">
         <!-- Delicate Red Accent bar -->
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background-color: var(--color-primary);"></div>
@@ -112,7 +162,7 @@
             Unduh laporan riset mendalam tim jurnalis NusaKini seputar peta ancaman kejahatan digital nasional edisi terbaru gratis.
         </p>
         
-        <a href="#" style="background-color: #fff; color: var(--color-dark); padding: 8px 20px; border-radius: var(--border-radius-sm); font-size: 0.78rem; font-weight: 700; display: inline-block; transition: var(--transition-smooth); width: 100%;">
+        <a href="{{ \App\Models\Setting::get('epaper_link', '#') }}" target="_blank" style="background-color: #fff; color: var(--color-dark); padding: 8px 20px; border-radius: var(--border-radius-sm); font-size: 0.78rem; font-weight: 700; display: inline-block; transition: var(--transition-smooth); width: 100%; text-align: center; text-decoration: none;">
             Unduh PDF Sekarang
         </a>
     </div>

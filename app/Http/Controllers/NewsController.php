@@ -16,6 +16,7 @@ use App\Models\SearchLog;
 use App\Models\PollVote;
 use App\Models\Poll;
 use App\Models\Tag;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
@@ -597,4 +598,5 @@ class NewsController extends Controller
             'new_count' => $article->$column,
         ]);
     }
+
 }

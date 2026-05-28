@@ -4,13 +4,19 @@
         <div class="top-bar-left">
             <span id="live-clock" style="font-weight: 600; letter-spacing: 0.2px;">Memuat waktu...</span>
         </div>
+        
+        <!-- Live Financial Market Ticker center section (Desktop Only) -->
+        <div class="top-bar-center" id="financial-ticker-bar">
+            <!-- Dynamically populated fluctuating values by JavaScript -->
+        </div>
+
         <div class="top-bar-right">
-            <!-- Simulated Weather Status -->
-            <div style="display: flex; align-items: center; gap: 6px; font-weight: 600;">
-                <svg style="width: 14px; height: 14px; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <!-- Simulated Weather Status (Synced with Sidebar Widget) -->
+            <div id="topbar-weather-display" style="display: flex; align-items: center; gap: 6px; font-weight: 600;" title="Sinkron dengan Widget Cuaca Bilah Samping">
+                <svg id="topbar-weather-icon" style="width: 14px; height: 14px; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
                 </svg>
-                <span>Jakarta, 31°C</span>
+                <span id="topbar-weather-text">Jakarta, 31°C</span>
             </div>
             <span>•</span>
             <!-- Saved Reading List Badge Link -->
@@ -56,27 +62,55 @@
     <div class="portal-container nav-flex">
         <!-- Responsive Category Menu Lists -->
         <ul class="nav-links">
-            <li class="nav-item {{ request()->routeIs('news.home') ? 'active' : '' }}">
-                <a href="{{ route('news.home') }}">Beranda</a>
-            </li>
-            <li class="nav-item {{ request()->is('category/politik-hukum') ? 'active' : '' }}">
-                <a href="{{ route('news.category', 'politik-hukum') }}">Politik & Hukum</a>
-            </li>
-            <li class="nav-item {{ request()->is('category/ekonomi-bisnis') ? 'active' : '' }}">
-                <a href="{{ route('news.category', 'ekonomi-bisnis') }}">Ekonomi & Bisnis</a>
-            </li>
-            <li class="nav-item {{ request()->is('category/teknologi-sains') ? 'active' : '' }}">
-                <a href="{{ route('news.category', 'teknologi-sains') }}">Teknologi & Sains</a>
-            </li>
-            <li class="nav-item {{ request()->is('category/gaya-hidup') ? 'active' : '' }}">
-                <a href="{{ route('news.category', 'gaya-hidup') }}">Gaya Hidup</a>
-            </li>
-            <li class="nav-item {{ request()->routeIs('news.contact') ? 'active' : '' }}">
-                <a href="{{ route('news.contact') }}">Hubungi Kami</a>
-            </li>
+            @php
+                $navbarMenus = \App\Models\Menu::whereNull('parent_id')
+                    ->where('is_active', true)
+                    ->orderBy('order', 'asc')
+                    ->with(['children' => function($q) {
+                        $q->where('is_active', true)->orderBy('order', 'asc');
+                    }])
+                    ->get();
+            @endphp
+            @foreach($navbarMenus as $menu)
+                @php
+                    $hasChildren = $menu->children->count() > 0;
+                    $isActive = request()->is(trim($menu->url, '/')) || (request()->routeIs('news.home') && $menu->url === '/');
+                    
+                    if (!$isActive && $hasChildren) {
+                        foreach($menu->children as $child) {
+                            if (request()->is(trim($child->url, '/'))) {
+                                $isActive = true;
+                                break;
+                            }
+                        }
+                    }
+                @endphp
+                
+                @if($hasChildren)
+                    <li class="nav-item has-dropdown {{ $isActive ? 'active' : '' }}" style="position: relative;">
+                        <a href="{{ $menu->url }}" style="display: flex; align-items: center; gap: 4px;">
+                            {{ $menu->name }}
+                            <svg style="width: 10px; height: 10px; transition: transform 0.3s ease;" class="dropdown-caret" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </a>
+                        
+                        <!-- Premium Dropdown Menu -->
+                        <ul class="dropdown-menu">
+                            @foreach($menu->children as $child)
+                                <li class="dropdown-item {{ request()->is(trim($child->url, '/')) ? 'active' : '' }}">
+                                    <a href="{{ $child->url }}">{{ $child->name }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                @else
+                    <li class="nav-item {{ $isActive ? 'active' : '' }}">
+                        <a href="{{ $menu->url }}">{{ $menu->name }}</a>
+                    </li>
+                @endif
+            @endforeach
         </ul>
-        
-        <div style="width: 1px; height: 1px; display: none;"></div>
     </div>
 </nav>
 
