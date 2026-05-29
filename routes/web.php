@@ -10,6 +10,7 @@ Route::get('/article/{slug}', [NewsController::class, 'detail'])->name('news.det
 Route::get('/article/{slug}/comments-list', [NewsController::class, 'getComments'])->name('news.comments.list');
 Route::get('/bookmarks', [NewsController::class, 'bookmarks'])->name('news.bookmarks');
 Route::get('/search', [NewsController::class, 'search'])->name('news.search');
+Route::get('/api/search/autocomplete', [NewsController::class, 'autocomplete'])->name('news.search.autocomplete');
 Route::get('/author/{username}', [NewsController::class, 'author'])->name('news.author');
 Route::get('/contact', [NewsController::class, 'contact'])->name('news.contact');
 
@@ -29,7 +30,6 @@ Route::post('/article/{slug}/react', [NewsController::class, 'react'])->name('ne
 // Custom Pages Route
 Route::get('/page/{slug}', [NewsController::class, 'showPage'])->name('news.page');
 
-// Dynamic Sitemap.xml Route
+// Dynamic Sitemap.xml & RSS Feed Routes
 Route::get('/sitemap.xml', [NewsController::class, 'sitemap'])->name('news.sitemap');
-
-
+Route::get('/feed', [NewsController::class, 'feed'])->name('news.feed');

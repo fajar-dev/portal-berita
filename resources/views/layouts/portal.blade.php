@@ -11,7 +11,9 @@
     <meta name="description" content="@yield('meta_description', 'NusaKini menyajikan portal berita terkini seputar Politik, Ekonomi, Teknologi, Olahraga, Gaya Hidup, dan Internasional secara mendalam, cerdas, dan kredibel.')">
     <meta name="keywords" content="portal berita, berita terkini, EBT, ekonomi digital, AI medis, sport science, NusaKini, berita indonesia">
     <meta name="author" content="NusaKini Editorial Team">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="{{ request()->url() }}">
+    <link rel="alternate" type="application/rss+xml" title="NusaKini RSS Feed" href="{{ route('news.feed') }}">
     
     <!-- Favicon & Themes -->
     @php
@@ -36,6 +38,15 @@
 
     <!-- Dynamic Schema.org JSON-LD structured data -->
     @yield('schema_json_ld')
+
+    <!-- Dark Mode FOUC Prevention -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
 
     <!-- Vite Assets compiled -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

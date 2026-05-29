@@ -35,6 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 12. Lazy Loading Images (JS based)
     initLazyImages();
+
+    // 13. Live Search Autocomplete
+    initLiveSearch();
+
+    // 14. True Dark Mode Toggle
+    initDarkMode();
 });
 
 /* ==========================================================================
@@ -1057,7 +1063,144 @@ function initLazyImages() {
         });
     }, { rootMargin: "0px 0px 300px 0px" });
 
-    lazyImages.forEach(img => {
+        lazyImages.forEach(img => {
         imageObserver.observe(img);
+    });
+}
+
+// ==========================================================================
+// 13. Smart Live Search Autocomplete Functionality
+// ==========================================================================
+function initLiveSearch() {
+    const searchInput = document.getElementById('smart-search-input');
+    const autocompleteBox = document.getElementById('search-autocomplete-box');
+    
+    if (!searchInput || !autocompleteBox) return;
+
+    let debounceTimer;
+
+    const getApiBaseUrl = () => {
+        return window.location.origin;
+    };
+
+    const escapeHTML = (str) => {
+        return str.replace(/[&<>'"]/g, 
+            tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag])
+        );
+    };
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+
+        if (query.length < 2) {
+            autocompleteBox.style.display = 'none';
+            autocompleteBox.innerHTML = '';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`${getApiBaseUrl()}/api/search/autocomplete?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    autocompleteBox.innerHTML = '';
+                    
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const link = document.createElement('a');
+                            link.href = item.url;
+                            link.className = 'autocomplete-item';
+                            link.innerHTML = `
+                                <img src="${item.image}" alt="${escapeHTML(item.title)}" class="autocomplete-image">
+                                <div class="autocomplete-details">
+                                    <span class="autocomplete-title">${escapeHTML(item.title)}</span>
+                                    <span class="autocomplete-category">${escapeHTML(item.category || 'Berita')}</span>
+                                </div>
+                            `;
+                            autocompleteBox.appendChild(link);
+                        });
+                        
+                        // Add a view all results link at the bottom
+                        const viewAll = document.createElement('a');
+                        viewAll.href = `${getApiBaseUrl()}/search?q=${encodeURIComponent(query)}`;
+                        viewAll.className = 'autocomplete-item';
+                        viewAll.style.justifyContent = 'center';
+                        viewAll.style.color = 'var(--color-primary)';
+                        viewAll.style.fontWeight = '800';
+                        viewAll.style.fontSize = '0.8rem';
+                        viewAll.innerHTML = `Lihat semua hasil untuk "${escapeHTML(query)}" &rarr;`;
+                        autocompleteBox.appendChild(viewAll);
+
+                        autocompleteBox.style.display = 'flex';
+                    } else {
+                        autocompleteBox.innerHTML = `
+                            <div style="padding: 15px; text-align: center; color: var(--color-text-muted); font-size: 0.85rem;">
+                                Tidak ada hasil ditemukan.
+                            </div>
+                        `;
+                        autocompleteBox.style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error fetching autocomplete:', error));
+        }, 300); // 300ms debounce
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !autocompleteBox.contains(e.target)) {
+            autocompleteBox.style.display = 'none';
+        }
+    });
+
+    // Re-open if input is focused and has value
+    searchInput.addEventListener('focus', function() {
+        if (this.value.trim().length >= 2 && autocompleteBox.innerHTML !== '') {
+            autocompleteBox.style.display = 'flex';
+        }
+    });
+}
+
+// ==========================================================================
+// 14. True Dark Mode Toggle Logic
+// ==========================================================================
+function initDarkMode() {
+    const toggleBtn = document.getElementById('dark-mode-toggle');
+    if (!toggleBtn) return;
+
+    const sunIcon = toggleBtn.querySelector('.sun-icon');
+    const moonIcon = toggleBtn.querySelector('.moon-icon');
+
+    // Check initial state from HTML attribute (which was set by inline script in head)
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    // Set initial icons visibility
+    if (isDark) {
+        if (sunIcon) sunIcon.style.display = 'block';
+        if (moonIcon) moonIcon.style.display = 'none';
+    } else {
+        if (sunIcon) sunIcon.style.display = 'none';
+        if (moonIcon) moonIcon.style.display = 'block';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        if (newTheme === 'dark') {
+            if (sunIcon) sunIcon.style.display = 'block';
+            if (moonIcon) moonIcon.style.display = 'none';
+        } else {
+            if (sunIcon) sunIcon.style.display = 'none';
+            if (moonIcon) moonIcon.style.display = 'block';
+        }
     });
 }

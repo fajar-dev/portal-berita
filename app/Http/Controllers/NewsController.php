@@ -341,6 +341,37 @@ class NewsController extends Controller
     }
 
     /**
+     * GET Action: Live Autocomplete Search API
+     */
+    public function autocomplete(Request $request)
+    {
+        $query = $request->query('q');
+
+        if (empty($query) || strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $results = Article::select('title', 'slug', 'image', 'category')
+            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
+            ->where(function($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('excerpt', 'like', "%{$query}%");
+            })
+            ->take(5)
+            ->get()
+            ->map(function($article) {
+                return [
+                    'title' => $article->title,
+                    'url' => route('news.detail', $article->slug),
+                    'image' => asset($article->image),
+                    'category' => $article->category
+                ];
+            });
+
+        return response()->json($results);
+    }
+
+    /**
      * Author Profile Page Method
      */
     public function author($username)
@@ -705,5 +736,18 @@ class NewsController extends Controller
             'new_count' => $article->$column,
         ]);
     }
+    /**
+     * RSS Feed Generator
+     */
+    public function feed()
+    {
+        $articles = Article::with('user')
+            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
+            ->orderBy('created_at', 'desc')
+            ->take(20)
+            ->get();
 
+        return response()->view('feed', compact('articles'))
+            ->header('Content-Type', 'application/rss+xml; charset=utf-8');
+    }
 }

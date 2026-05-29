@@ -40,6 +40,22 @@
     --container-max-width: 1320px;
 }
 
+/* Dark Mode Theme Overrides */
+[data-theme="dark"] {
+    --color-primary: hsl(354, 80%, 55%);
+    --color-primary-hover: hsl(354, 80%, 65%);
+    --color-primary-soft: hsl(354, 80%, 15%);
+    --color-dark: hsl(220, 10%, 96%); /* White/Light grey for titles */
+    --color-dark-soft: hsl(220, 10%, 90%);
+    --color-dark-light: hsl(220, 10%, 80%);
+    --color-light: #050505; /* Pitch black background */
+    --color-card-bg: #121212; /* Very dark card background */
+    --color-border: #27272a; /* Dark border */
+    --color-text: #d1d5db; /* Light grey body text */
+    --color-text-muted: #9ca3af;
+    color-scheme: dark;
+}
+
 /* Tailwind Theme Override */
 @theme {
     --font-sans: var(--font-body);
@@ -90,7 +106,7 @@ a {
 
 /* Reusable Header & Navbar Styles */
 .top-bar {
-    background-color: var(--color-dark);
+    background-color: hsl(220, 20%, 12%); /* Fixed dark background for both modes */
     color: hsl(0, 0%, 90%);
     font-size: 0.78rem;
     font-weight: 500;
@@ -184,7 +200,7 @@ a {
 
 #weather-city-selector option {
     color: var(--color-dark);
-    background-color: #fff;
+    background-color: var(--color-card-bg);
     font-weight: 600;
 }
 
@@ -352,6 +368,10 @@ a {
     transition: background-color 0.4s ease;
 }
 
+[data-theme="dark"] .main-navigation {
+    background-color: rgba(18, 18, 18, 0.95);
+}
+
 .nav-flex {
     display: flex;
     justify-content: space-between;
@@ -425,6 +445,11 @@ a {
     opacity: 0;
     visibility: hidden;
     transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] .dropdown-menu {
+    background-color: rgba(18, 18, 18, 0.98);
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
 }
 
 .dropdown-item {
@@ -548,7 +573,7 @@ a {
 
 .hero-primary-card {
     position: relative;
-    background-color: var(--color-dark);
+    background-color: #1a1a1a;
     border-radius: var(--border-radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
@@ -638,7 +663,7 @@ a {
 }
 
 .hero-primary-card:hover .category-tag {
-    background-color: #fff;
+    background-color: var(--color-card-bg);
     color: var(--color-primary);
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
@@ -720,7 +745,7 @@ a {
 }
 
 .hero-primary-card .btn-read-more:hover {
-    background-color: #fff;
+    background-color: var(--color-card-bg);
     color: var(--color-primary);
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(255, 255, 255, 0.25);
@@ -742,7 +767,7 @@ a {
 
 .stacked-card {
     position: relative;
-    background-color: var(--color-dark);
+    background-color: #1a1a1a;
     border-radius: var(--border-radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
@@ -849,7 +874,7 @@ a {
 }
 
 .stacked-card:hover .stacked-category {
-    background-color: #fff;
+    background-color: var(--color-card-bg);
     color: var(--color-primary);
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.35);
     transform: translateY(-2px);
@@ -1110,7 +1135,7 @@ a {
 
 .video-card:hover .play-btn-overlay {
     transform: translate(-50%, -50%) scale(1.1);
-    background-color: #fff;
+    background-color: var(--color-card-bg);
     color: var(--color-primary);
 }
 
@@ -1442,7 +1467,7 @@ a {
 }
 
 .btn-premium-cta {
-    background-color: #fff;
+    background-color: var(--color-card-bg);
     color: var(--color-primary);
     padding: 14px 30px;
     border-radius: var(--border-radius-pill);
@@ -2108,7 +2133,112 @@ a {
     font-size: 0.9rem;
     outline: none;
     background-color: var(--color-light);
+    color: var(--color-text);
     transition: var(--transition-smooth);
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 20px;
+    border-radius: var(--border-radius-pill);
+    border: 1.5px solid var(--color-border);
+    font-size: 0.9rem;
+    outline: none;
+    transition: var(--transition-smooth);
+    background-color: var(--color-light);
+    color: var(--color-text);
+}
+
+.search-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(204, 20, 45, 0.1);
+    background-color: var(--color-card-bg);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-icon:hover {
+    color: var(--color-primary);
+}
+
+/* Smart Search Autocomplete Dropdown */
+.autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.autocomplete-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--color-dark);
+    border-bottom: 1px solid var(--color-light);
+    transition: var(--transition-smooth);
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover, .autocomplete-item.active {
+    background-color: var(--color-light);
+}
+
+.autocomplete-image {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--border-radius-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.autocomplete-details {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.autocomplete-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.autocomplete-category {
+    font-size: 0.7rem;
+    color: var(--color-primary);
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-top: 4px;
 }
 
 .comment-input-field:focus {
@@ -2118,7 +2248,7 @@ a {
 }
 
 .comment-submit-btn {
-    background-color: var(--color-dark);
+    background-color: #1a1a1a;
     color: #fff;
     border: none;
     padding: 14px 30px;

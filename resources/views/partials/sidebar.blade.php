@@ -149,7 +149,7 @@
     </div>
 
     <!-- 4. Premium Editorial Promo Card (Bespoke Ad) -->
-    <div class="widget-card" style="background-color: var(--color-dark); color: #fff; text-align: center; border: none; overflow: hidden; position: relative;">
+    <div class="widget-card" style="background-color: #1a1a1a; color: #fff; text-align: center; border: none; overflow: hidden; position: relative;">
         <!-- Delicate Red Accent bar -->
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background-color: var(--color-primary);"></div>
         
@@ -165,7 +165,7 @@
             Unduh laporan riset mendalam tim jurnalis NusaKini seputar peta ancaman kejahatan digital nasional edisi terbaru gratis.
         </p>
         
-        <a href="{{ \App\Models\Setting::get('epaper_link', '#') }}" target="_blank" style="background-color: #fff; color: var(--color-dark); padding: 8px 20px; border-radius: var(--border-radius-sm); font-size: 0.78rem; font-weight: 700; display: inline-block; transition: var(--transition-smooth); width: 100%; text-align: center; text-decoration: none;">
+        <a href="{{ \App\Models\Setting::get('epaper_link', '#') }}" target="_blank" style="background-color: #fff; color: #1a1a1a; padding: 8px 20px; border-radius: var(--border-radius-sm); font-size: 0.78rem; font-weight: 700; display: inline-block; transition: var(--transition-smooth); width: 100%; text-align: center; text-decoration: none;">
             Unduh PDF Sekarang
         </a>
     </div>

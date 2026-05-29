@@ -20,13 +20,33 @@
             </div>
             <span>•</span>
             <!-- Saved Reading List Badge Link -->
-            <a href="{{ route('news.bookmarks') }}" style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--color-primary-soft); background-color: var(--color-primary); padding: 2px 10px; border-radius: var(--border-radius-sm); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">
+            <a href="{{ route('news.bookmarks') }}" style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--color-primary-soft); background-color: var(--color-primary); padding: 2px 10px; border-radius: var(--border-radius-sm); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none;">
                 <svg style="width: 11px; height: 11px;" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
                 </svg>
                 <span>Simpanan</span>
-                <span id="bookmark-count-badge" style="background-color: #fff; color: var(--color-primary); font-size: 0.65rem; padding: 0px 5px; border-radius: 50%; font-weight: 800; min-width: 14px; text-align: center; display: none;">0</span>
+                <span id="bookmark-count-badge" style="background-color: var(--color-card-bg); color: var(--color-primary); font-size: 0.65rem; padding: 0px 5px; border-radius: 50%; font-weight: 800; min-width: 14px; text-align: center; display: none;">0</span>
             </a>
+            <span>•</span>
+            <!-- RSS Feed Button -->
+            <a href="{{ route('news.feed') }}" target="_blank" style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #fff; background-color: #f26522; padding: 2px 10px; border-radius: var(--border-radius-sm); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none;">
+                <svg style="width: 11px; height: 11px;" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 11.08c4.39 0 7.95 3.56 7.95 7.95h3.19C15.14 12.9 10.14 7.89 4 7.89v3.19M4 4c8.31 0 15.05 6.74 15.05 15.05h3.19C22.24 8.95 14.1 4 4 4z"/>
+                </svg>
+                <span>RSS</span>
+            </a>
+            <span>•</span>
+            <!-- Dark Mode Toggle Button -->
+            <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" style="background: none; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; transition: var(--transition-smooth);">
+                <!-- Sun Icon (shown when dark) -->
+                <svg class="sun-icon" style="width: 16px; height: 16px; display: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                </svg>
+                <!-- Moon Icon (shown when light) -->
+                <svg class="moon-icon" style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
         </div>
     </div>
 </div>
@@ -57,14 +77,16 @@
         </div>
         
         <!-- Interactive Search Bar -->
-        <div class="search-bar-container">
-            <form action="{{ route('news.search') }}" method="GET">
-                <input type="text" name="q" class="search-input" placeholder="Cari berita hangat hari ini..." required value="{{ $query ?? '' }}">
+        <div class="search-bar-container" style="position: relative;">
+            <form action="{{ route('news.search') }}" method="GET" id="main-search-form">
+                <input type="text" name="q" class="search-input" id="smart-search-input" placeholder="Cari berita hangat hari ini..." required value="{{ $query ?? '' }}" autocomplete="off">
                 <button type="submit" class="search-icon" aria-label="Cari Berita">
                     <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </button>
+                <!-- Autocomplete Dropdown Box -->
+                <div id="search-autocomplete-box" class="autocomplete-dropdown" style="display: none;"></div>
             </form>
         </div>
     </div>
