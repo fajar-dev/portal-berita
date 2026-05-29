@@ -162,7 +162,7 @@
         </h4>
         
         <p style="font-size: 0.8rem; color: hsl(220, 10%, 75%); line-height: 1.5; margin-bottom: 20px; padding: 0 10px;">
-            Unduh laporan riset mendalam tim jurnalis NusaKini seputar peta ancaman kejahatan digital nasional edisi terbaru gratis.
+            Unduh laporan riset mendalam tim jurnalis {{ \App\Models\Setting::get('site_name', 'NusaKini') }} seputar peta ancaman kejahatan digital nasional edisi terbaru gratis.
         </p>
         
         <a href="{{ \App\Models\Setting::get('epaper_link', '#') }}" target="_blank" style="background-color: #fff; color: #1a1a1a; padding: 8px 20px; border-radius: var(--border-radius-sm); font-size: 0.78rem; font-weight: 700; display: inline-block; transition: var(--transition-smooth); width: 100%; text-align: center; text-decoration: none;">

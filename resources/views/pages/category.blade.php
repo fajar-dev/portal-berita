@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 
-@section('title', 'Berita ' . $categoryName . ' Terhangat - NusaKini')
-@section('meta_description', 'Kumpulan liputan mendalam dan analisis berita terhangat seputar kategori ' . $categoryName . ' secara terpercaya di NusaKini.')
+@section('title', 'Berita ' . $categoryName . ' Terhangat - ' . \App\Models\Setting::get('site_name', 'NusaKini'))
+@section('meta_description', 'Kumpulan liputan mendalam dan analisis berita terhangat seputar kategori ' . $categoryName . ' secara terpercaya di ' . \App\Models\Setting::get('site_name', 'NusaKini') . '.')
 
 @section('content')
 
@@ -14,7 +14,7 @@
             Kanal: <span style="border-bottom: 3px solid var(--color-primary); padding-bottom: 4px;">{{ $categoryName }}</span>
         </h1>
         <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-top: 15px; max-width: 700px; line-height: 1.5;">
-            Menyajikan kumpulan laporan investigatif, ulasan mendalam, dan informasi paling kredibel seputar topik {{ $categoryName }} yang dirangkum langsung oleh tim redaksi NusaKini.
+            Menyajikan kumpulan laporan investigatif, ulasan mendalam, dan informasi paling kredibel seputar topik {{ $categoryName }} yang dirangkum langsung oleh tim redaksi {{ \App\Models\Setting::get('site_name', 'NusaKini') }}.
         </p>
     </div>
 

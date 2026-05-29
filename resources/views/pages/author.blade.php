@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 
-@section('title', 'Profil Jurnalis: ' . $author['name'] . ' - NusaKini')
-@section('meta_description', 'Kumpulan artikel liputan investigatif dan analisis berita eksklusif oleh jurnalis tepercaya NusaKini: ' . $author['name'])
+@section('title', 'Profil Jurnalis: ' . $author['name'] . ' - ' . \App\Models\Setting::get('site_name', 'NusaKini'))
+@section('meta_description', 'Kumpulan artikel liputan investigatif dan analisis berita eksklusif oleh jurnalis tepercaya ' . \App\Models\Setting::get('site_name', 'NusaKini') . ': ' . $author['name'])
 
 @section('content')
 
@@ -22,7 +22,7 @@
         </div>
 
         <div class="author-profile-header-role">
-            Redaktur Liputan Utama NusaKini
+            Redaktur Liputan Utama {{ \App\Models\Setting::get('site_name', 'NusaKini') }}
         </div>
 
         <p style="font-size: 0.95rem; color: var(--color-text-muted); max-width: 650px; margin: 15px auto; line-height: 1.6;">

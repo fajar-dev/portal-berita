@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 
-@section('title', 'Hasil Pencarian "' . ($query ?? '') . '" - NusaKini')
-@section('meta_description', 'Menampilkan hasil pencarian artikel berita NusaKini berdasarkan kata kunci pencarian Anda.')
+@section('title', 'Hasil Pencarian "' . ($query ?? '') . '" - ' . \App\Models\Setting::get('site_name', 'NusaKini'))
+@section('meta_description', 'Menampilkan hasil pencarian artikel berita ' . \App\Models\Setting::get('site_name', 'NusaKini') . ' berdasarkan kata kunci pencarian Anda.')
 
 @section('content')
 

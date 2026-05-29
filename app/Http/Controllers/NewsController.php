@@ -471,7 +471,7 @@ class NewsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Terima kasih! Email Anda berhasil didaftarkan dalam newsletter NusaKini.',
+            'message' => 'Terima kasih! Email Anda berhasil didaftarkan dalam newsletter ' . \App\Models\Setting::get('site_name', 'NusaKini') . '.',
             'data' => $subscriber
         ]);
     }

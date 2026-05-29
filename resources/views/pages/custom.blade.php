@@ -1,6 +1,6 @@
 @extends('layouts.portal')
 
-@section('title', $page->title . ' - NusaKini')
+@section('title', $page->title . ' - ' . \App\Models\Setting::get('site_name', 'NusaKini'))
 @section('meta_description', strip_tags(substr($page->content, 0, 160)))
 
 @section('content')

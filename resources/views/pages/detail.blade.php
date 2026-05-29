@@ -1,6 +1,6 @@
 @extends('layouts.portal')
 
-@section('title', $article['title'] . ' - NusaKini')
+@section('title', $article['title'] . ' - ' . \App\Models\Setting::get('site_name', 'NusaKini'))
 @section('meta_description', $article['excerpt'])
 @section('og_type', 'article')
 @section('og_image', asset($article['image']))
@@ -23,7 +23,7 @@
     }],
   "publisher": {
     "@type": "Organization",
-    "name": "NusaKini",
+    "name": "{{ \App\Models\Setting::get('site_name', 'NusaKini') }}",
     "logo": {
       "@type": "ImageObject",
       "url": "{{ asset('favicon.ico') }}"

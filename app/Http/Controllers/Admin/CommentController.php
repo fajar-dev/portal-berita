@@ -32,8 +32,8 @@ class CommentController extends Controller
             'article_id' => $comment->article_id,
             'parent_id' => $comment->id,
             'user_id' => auth()->id(),
-            'name' => auth()->user()->name ?? 'Admin NusaKini',
-            'email' => auth()->user()->email ?? 'admin@nusakini.com',
+            'name' => auth()->user()->name ?? 'Admin ' . \App\Models\Setting::get('site_name', 'NusaKini'),
+            'email' => auth()->user()->email ?? \App\Models\Setting::get('office_email', 'admin@nusakini.com'),
             'body' => $request->body,
         ]);
         return redirect()->route('admin.comments.index')->with('success', 'Balasan berhasil dikirim.');

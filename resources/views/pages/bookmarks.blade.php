@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 
-@section('title', 'Artikel Tersimpan - NusaKini')
-@section('meta_description', 'Akses daftar berita dan analisis eksklusif yang Anda simpan untuk dibaca kembali kapan saja di NusaKini.')
+@section('title', 'Artikel Tersimpan - ' . \App\Models\Setting::get('site_name', 'NusaKini'))
+@section('meta_description', 'Akses daftar berita dan analisis eksklusif yang Anda simpan untuk dibaca kembali kapan saja di ' . \App\Models\Setting::get('site_name', 'NusaKini') . '.')
 
 @section('content')
 

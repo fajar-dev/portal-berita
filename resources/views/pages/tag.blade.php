@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 
-@section('title', 'Topik Berita ' . $tagName . ' - NusaKini')
-@section('meta_description', 'Kumpulan analisis berita mendalam dan kabar eksklusif seputar topik ' . $tagName . ' secara terpercaya di NusaKini.')
+@section('title', 'Topik Berita ' . $tagName . ' - ' . \App\Models\Setting::get('site_name', 'NusaKini'))
+@section('meta_description', 'Kumpulan analisis berita mendalam dan kabar eksklusif seputar topik ' . $tagName . ' secara terpercaya di ' . \App\Models\Setting::get('site_name', 'NusaKini') . '.')
 
 @section('content')
 
@@ -14,7 +14,7 @@
             Tag: <span style="border-bottom: 3px solid var(--color-primary); padding-bottom: 4px;">#{{ $tagName }}</span>
         </h1>
         <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-top: 15px; max-width: 700px; line-height: 1.5;">
-            Menyajikan kumpulan laporan investigatif, ulasan mendalam, dan informasi paling kredibel seputar topik #{{ $tagName }} yang dikurasi langsung oleh tim redaksi NusaKini.
+            Menyajikan kumpulan laporan investigatif, ulasan mendalam, dan informasi paling kredibel seputar topik #{{ $tagName }} yang dikurasi langsung oleh tim redaksi {{ \App\Models\Setting::get('site_name', 'NusaKini') }}.
         </p>
     </div>
 

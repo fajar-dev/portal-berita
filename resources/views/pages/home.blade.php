@@ -1,6 +1,6 @@
 @extends('layouts.portal')
 
-@section('title', 'NusaKini - Portal Berita Modern, Kredibel, & Tepercaya')
+@section('title', \App\Models\Setting::get('site_name', 'NusaKini') . ' - Portal Berita Modern, Kredibel, & Tepercaya')
 
 @section('content')
 
@@ -198,9 +198,9 @@
            ========================================================================== -->
         <div class="premium-gradient-banner">
             <div class="premium-banner-left">
-                <span class="premium-banner-badge">NusaKini Premium</span>
+                <span class="premium-banner-badge">{{ \App\Models\Setting::get('site_name', 'NusaKini') }} Premium</span>
                 <h3 class="premium-banner-title">Jurnalisme Independen Membutuhkan Dukungan Anda</h3>
-                <p class="premium-banner-desc">Berlangganan NusaKini Premium untuk mendapatkan laporan investigatif tanpa
+                <p class="premium-banner-desc">Berlangganan {{ \App\Models\Setting::get('site_name', 'NusaKini') }} Premium untuk mendapatkan laporan investigatif tanpa
                     batas, analisis ekonomi makro mingguan, serta arsip infografis resolusi tinggi bebas gangguan.</p>
             </div>
             <div class="premium-banner-right">

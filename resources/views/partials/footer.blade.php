@@ -24,7 +24,7 @@
                     @endif
                 </a>
                 <p class="footer-desc">
-                    {{ \App\Models\Setting::get('site_description', 'NusaKini adalah portal media digital independen...') }}
+                    {{ \App\Models\Setting::get('site_description', $siteName . ' adalah portal media digital independen...') }}
                 </p>
                 <div style="font-size: 0.8rem; color: hsl(220, 10%, 65%); margin-top: 15px;">
                     {{ \App\Models\Setting::get('office_address') }}<br>
@@ -75,7 +75,7 @@
         <!-- Lower Bottom Footer Bar -->
         <div class="footer-bottom">
             <span class="copyright-text">
-                &copy; {{ date('Y') }} NusaKini. Seluruh Hak Cipta Dilindungi Undang-Undang.
+                &copy; {{ date('Y') }} {{ $siteName }}. Seluruh Hak Cipta Dilindungi Undang-Undang.
             </span>
 
             <!-- Custom Dynamic Static Pages Links -->

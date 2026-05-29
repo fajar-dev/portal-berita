@@ -1,7 +1,7 @@
 @extends('layouts.portal')
 
-@section('title', 'Hubungi Redaksi NusaKini - Portal Berita Modern')
-@section('meta_description', 'Kirim kritik, saran, pertanyaan, atau rilis pers Anda ke redaksi NusaKini. Kami siap mendengarkan suara Anda.')
+@section('title', 'Hubungi Redaksi ' . \App\Models\Setting::get('site_name', 'NusaKini') . ' - Portal Berita Modern')
+@section('meta_description', 'Kirim kritik, saran, pertanyaan, atau rilis pers Anda ke redaksi ' . \App\Models\Setting::get('site_name', 'NusaKini') . '. Kami siap mendengarkan suara Anda.')
 
 @section('content')
 
