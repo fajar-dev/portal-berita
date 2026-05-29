@@ -12,7 +12,11 @@
             <div class="form-row">
                 <div class="form-group" style="flex:3;">
                     <label class="form-label">Nama Kategori</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $category->name ?? '') }}" required placeholder="Contoh: Politik & Hukum">
+                    <input type="text" id="title-input" name="name" class="form-control" value="{{ old('name', $category->name ?? '') }}" required placeholder="Contoh: Politik & Hukum">
+                </div>
+                <div class="form-group" style="flex:3;">
+                    <label class="form-label">Slug</label>
+                    <input type="text" id="slug-input" name="slug" class="form-control" value="{{ old('slug', $category->slug ?? '') }}" required placeholder="politik-hukum">
                 </div>
                 <div class="form-group" style="flex:1;">
                     <label class="form-label">Warna</label>
@@ -34,3 +38,25 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+const titleInput = document.getElementById('title-input');
+const slugInput = document.getElementById('slug-input');
+let slugEdited = false;
+
+slugInput.addEventListener('input', function() {
+    slugEdited = true;
+});
+
+titleInput.addEventListener('input', function() {
+    if (!slugEdited && !'{{ isset($category) ? $category->id : '' }}') {
+        let slug = this.value.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        slugInput.value = slug;
+    }
+});
+</script>
+@endpush

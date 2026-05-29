@@ -10,10 +10,17 @@
             @csrf
             @if(isset($infographic)) @method('PUT') @endif
 
-            <div class="form-group">
-                <label class="form-label">Judul Infografis</label>
-                <input type="text" name="title" class="form-control" value="{{ old('title', $infographic->title ?? '') }}" required>
-                @error('title')<div class="form-hint" style="color:var(--admin-danger);">{{ $message }}</div>@enderror
+            <div class="form-row" style="display:flex;gap:16px;">
+                <div class="form-group" style="flex:2;">
+                    <label class="form-label">Judul Infografis</label>
+                    <input type="text" id="title-input" name="title" class="form-control" value="{{ old('title', $infographic->title ?? '') }}" required>
+                    @error('title')<div class="form-hint" style="color:var(--admin-danger);">{{ $message }}</div>@enderror
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label class="form-label">Slug</label>
+                    <input type="text" id="slug-input" name="slug" class="form-control" value="{{ old('slug', $infographic->slug ?? '') }}" required>
+                    @error('slug')<div class="form-hint" style="color:var(--admin-danger);">{{ $message }}</div>@enderror
+                </div>
             </div>
 
             <div class="form-group">
@@ -44,3 +51,25 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+const titleInput = document.getElementById('title-input');
+const slugInput = document.getElementById('slug-input');
+let slugEdited = false;
+
+slugInput.addEventListener('input', function() {
+    slugEdited = true;
+});
+
+titleInput.addEventListener('input', function() {
+    if (!slugEdited && !'{{ isset($infographic) ? $infographic->id : '' }}') {
+        let slug = this.value.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        slugInput.value = slug;
+    }
+});
+</script>
+@endpush

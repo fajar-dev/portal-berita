@@ -28,13 +28,14 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|max:255',
+            'slug' => 'required|max:255|unique:categories,slug',
             'color' => 'required|max:7',
             'order' => 'nullable|integer',
         ]);
 
         Category::create([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'slug' => Str::slug($request->slug),
             'color' => $request->color,
             'order' => $request->order ?? 0,
         ]);
@@ -51,13 +52,14 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|max:255',
+            'slug' => 'required|max:255|unique:categories,slug,' . $category->id,
             'color' => 'required|max:7',
             'order' => 'nullable|integer',
         ]);
 
         $category->update([
             'name' => $request->name,
-            'slug' => Str::slug($request->name),
+            'slug' => Str::slug($request->slug),
             'color' => $request->color,
             'order' => $request->order ?? 0,
         ]);

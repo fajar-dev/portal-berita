@@ -26,8 +26,11 @@ class TagController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|max:100|unique:tags,name']);
-        Tag::create(['name' => $request->name, 'slug' => Str::slug($request->name)]);
+        $request->validate([
+            'name' => 'required|max:100|unique:tags,name',
+            'slug' => 'required|max:100|unique:tags,slug'
+        ]);
+        Tag::create(['name' => $request->name, 'slug' => Str::slug($request->slug)]);
         return redirect()->route('admin.tags.index')->with('success', 'Tag berhasil ditambahkan.');
     }
 
@@ -38,8 +41,11 @@ class TagController extends Controller
 
     public function update(Request $request, Tag $tag)
     {
-        $request->validate(['name' => 'required|max:100|unique:tags,name,' . $tag->id]);
-        $tag->update(['name' => $request->name, 'slug' => Str::slug($request->name)]);
+        $request->validate([
+            'name' => 'required|max:100|unique:tags,name,' . $tag->id,
+            'slug' => 'required|max:100|unique:tags,slug,' . $tag->id
+        ]);
+        $tag->update(['name' => $request->name, 'slug' => Str::slug($request->slug)]);
         return redirect()->route('admin.tags.index')->with('success', 'Tag berhasil diperbarui.');
     }
 

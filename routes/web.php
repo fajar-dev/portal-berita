@@ -44,6 +44,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // ── Shared: admin & author ──
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics');
+        
+        // WYSIWYG Upload Route
+        Route::post('/upload-image', [\App\Http\Controllers\Admin\UploadController::class, 'image'])->name('upload.image');
+
         Route::resource('articles', \App\Http\Controllers\Admin\ArticleController::class);
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
         Route::resource('tags', \App\Http\Controllers\Admin\TagController::class);

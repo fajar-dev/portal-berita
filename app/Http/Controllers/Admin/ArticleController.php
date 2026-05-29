@@ -38,13 +38,14 @@ class ArticleController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|max:255',
+            'slug' => 'required|max:255|unique:articles,slug',
             'category_id' => 'required|exists:categories,id',
             'content' => 'required',
             'status' => 'required|in:published,draft,archived',
         ]);
 
         $article = new Article($validated);
-        $article->slug = Str::slug($request->title) . '-' . time();
+        $article->slug = Str::slug($request->slug);
         $article->user_id = auth()->id() ?? 1;
         $article->excerpt = Str::limit(strip_tags($request->input('content')), 150);
         $wordCount = str_word_count(strip_tags($request->input('content')));
@@ -85,12 +86,14 @@ class ArticleController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|max:255',
+            'slug' => 'required|max:255|unique:articles,slug,' . $article->id,
             'category_id' => 'required|exists:categories,id',
             'content' => 'required',
             'status' => 'required|in:published,draft,archived',
         ]);
 
         $article->fill($validated);
+        $article->slug = Str::slug($request->slug);
         $article->excerpt = Str::limit(strip_tags($request->input('content')), 150);
         $wordCount = str_word_count(strip_tags($request->input('content')));
         $article->read_time = ceil($wordCount / 200) . ' Menit';

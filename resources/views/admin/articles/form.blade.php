@@ -60,9 +60,15 @@
             @csrf
             @if(isset($article)) @method('PUT') @endif
 
-            <div class="form-group">
-                <label class="form-label">Judul Artikel</label>
-                <input type="text" name="title" class="form-control" value="{{ old('title', $article->title ?? '') }}" required placeholder="Masukkan judul artikel...">
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label class="form-label">Judul Artikel</label>
+                    <input type="text" id="title-input" name="title" class="form-control" value="{{ old('title', $article->title ?? '') }}" required placeholder="Masukkan judul artikel...">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label class="form-label">Slug (URL)</label>
+                    <input type="text" id="slug-input" name="slug" class="form-control" value="{{ old('slug', $article->slug ?? '') }}" required placeholder="masukkan-judul-artikel">
+                </div>
             </div>
 
             <div class="form-row">
@@ -151,7 +157,27 @@
             'undo', 'redo'
         ],
         uploader: {
-            insertImageAsBase64URI: true,
+            url: '{{ route('admin.upload.image') }}',
+            format: 'json',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            isSuccess: function (resp) {
+                return resp.success;
+            },
+            getMessage: function (resp) {
+                return resp.message;
+            },
+            process: function (resp) {
+                return {
+                    files: resp.data.files,
+                    path: resp.data.path,
+                    baseurl: resp.data.baseurl,
+                    error: resp.error,
+                    msg: resp.message
+                };
+            }
         },
         style: {
             font: "'Plus Jakarta Sans', sans-serif",
@@ -182,6 +208,25 @@
 
     document.getElementById('newTagInput').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); addNewTag(); }
+    });
+
+    // Auto-generate slug
+    const titleInput = document.getElementById('title-input');
+    const slugInput = document.getElementById('slug-input');
+    let slugEdited = false;
+
+    slugInput.addEventListener('input', function() {
+        slugEdited = true;
+    });
+
+    titleInput.addEventListener('input', function() {
+        if (!slugEdited && !'{{ isset($article) ? $article->id : '' }}') {
+            let slug = this.value.toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            slugInput.value = slug;
+        }
     });
 </script>
 @endpush

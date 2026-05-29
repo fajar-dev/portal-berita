@@ -29,6 +29,7 @@ class InfographicController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255',
+            'slug' => 'required|max:255|unique:infographics,slug',
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
             'status' => 'required|in:published,draft,archived',
         ]);
@@ -37,7 +38,7 @@ class InfographicController extends Controller
 
         Infographic::create([
             'title' => $request->title,
-            'slug' => Str::slug($request->title) . '-' . time(),
+            'slug' => Str::slug($request->slug),
             'image' => 'storage/' . $imagePath,
             'status' => $request->status,
         ]);
@@ -54,12 +55,14 @@ class InfographicController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255',
+            'slug' => 'required|max:255|unique:infographics,slug,' . $infographic->id,
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'status' => 'required|in:published,draft,archived',
         ]);
 
         $data = [
             'title' => $request->title,
+            'slug' => Str::slug($request->slug),
             'status' => $request->status,
         ];
 

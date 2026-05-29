@@ -24,6 +24,13 @@
                 </div>
             </div>
 
+            <!-- Builder CSS -->
+            @if(!empty($page->css))
+                <style>
+                    {!! $page->css !!}
+                </style>
+            @endif
+
             <!-- Dynamic Custom Page Rich Content Body -->
             <div class="article-rich-content" style="font-size: 1.05rem; line-height: 1.8; color: var(--color-text); background-color: var(--color-card-bg); border-radius: var(--border-radius-md); padding: 40px; border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); margin-bottom: 30px;">
                 {!! $page->content !!}
