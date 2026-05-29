@@ -62,6 +62,10 @@
                         </article>
                     @endforeach
                 </div>
+                <!-- Pagination -->
+                @if(isset($results) && count($results) > 0)
+                    {{ $results->links('vendor.pagination.portal') }}
+                @endif
             @else
                 <!-- Elegant Empty Results State -->
                 <div style="text-align: center; padding: 60px 30px; background-color: var(--color-card-bg); border-radius: var(--border-radius-md); border: 1px solid var(--color-border);">

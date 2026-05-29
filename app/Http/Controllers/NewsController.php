@@ -166,13 +166,13 @@ class NewsController extends Controller
         $categoryName = $cat->name;
 
         // Query database
-        $categoryArticles = collect(Article::with(['user', 'category'])
+        $paginatedArticles = Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->where('category_id', $cat->id)
             ->orderBy('created_at', 'desc')
-            ->get())
-            ->map(fn($item) => $this->transformArticle($item))
-            ->all();
+            ->paginate(10);
+            
+        $categoryArticles = $paginatedArticles->through(fn($item) => $this->transformArticle($item));
 
         // Sidebar Trending
         $trendingArticles = collect(Article::with(['user', 'category'])
@@ -299,7 +299,7 @@ class NewsController extends Controller
     {
         $query = $request->input('q');
         
-        $results = [];
+        $results = null;
         if ($query) {
             // Log search query in database
             SearchLog::create([
@@ -307,15 +307,17 @@ class NewsController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            $results = collect(Article::with(['user', 'category'])
-                ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-                ->where(function($q) use ($query) {
-                    $q->where('title', 'like', "%{$query}%")
-                      ->orWhere('excerpt', 'like', "%{$query}%");
-                })
-                ->get())
-                ->map(fn($item) => $this->transformArticle($item))
-                ->all();
+            $paginatedArticles = Article::with(['user', 'category'])
+            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                  ->orWhere('excerpt', 'like', "%{$query}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+            
+            $results = $paginatedArticles->through(fn($item) => $this->transformArticle($item));
         }
 
         $trendingArticles = collect(Article::with(['user', 'category'])
@@ -669,9 +671,8 @@ class NewsController extends Controller
         }
 
         // Fetch articles associated with this tag (published only)
-        $tagArticles = collect($tag->articles()->where('status', \App\Enums\ContentStatus::PUBLISHED)->with('user')->orderBy('created_at', 'desc')->get())
-            ->map(fn($item) => $this->transformArticle($item))
-            ->all();
+        $paginatedArticles = $tag->articles()->where('status', \App\Enums\ContentStatus::PUBLISHED)->with('user')->orderBy('created_at', 'desc')->paginate(10);
+        $tagArticles = $paginatedArticles->through(fn($item) => $this->transformArticle($item));
 
         $tagName = $tag->name;
 

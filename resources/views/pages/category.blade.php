@@ -61,23 +61,9 @@
                 @endif
             </div>
 
-            <!-- Simulated Elegant Editorial Pagination -->
+            <!-- Pagination -->
             @if(isset($categoryArticles) && count($categoryArticles) > 0)
-                <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px; border-top: 1px solid var(--color-border); padding-top: 25px;">
-                    <a href="#" style="padding: 8px 14px; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-size: 0.82rem; font-weight: 700; color: var(--color-text-muted); pointer-events: none; opacity: 0.5;">
-                        Sebelumnya
-                    </a>
-                    <a href="#" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background-color: var(--color-primary); color: #fff; border-radius: var(--border-radius-sm); font-size: 0.82rem; font-weight: 700; border: 1px solid var(--color-primary);">
-                        1
-                    </a>
-                    <a href="#" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-size: 0.82rem; font-weight: 700; color: var(--color-dark);">
-                        2
-                    </a>
-                    <span style="font-size: 0.82rem; color: var(--color-text-muted);">...</span>
-                    <a href="#" style="padding: 8px 14px; border: 1px solid var(--color-border); border-radius: var(--border-radius-sm); font-size: 0.82rem; font-weight: 700; color: var(--color-dark);">
-                        Berikutnya
-                    </a>
-                </div>
+                {{ $categoryArticles->links('vendor.pagination.portal') }}
             @endif
 
         </div>
