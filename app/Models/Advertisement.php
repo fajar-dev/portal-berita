@@ -16,4 +16,8 @@ class Advertisement extends Model
         'target_url',
         'is_active',
     ];
+
+    protected $casts = [
+        'position' => \App\Enums\AdPosition::class,
+    ];
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('author_avatar');
             $table->string('role');
             $table->string('published_date');
-            $table->enum('status', ['published', 'draft'])->default('published');
+            $table->string('status')->default(\App\Enums\ContentStatus::PUBLISHED->value);
             $table->timestamps();
         });
     }

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('views')->default(0);
             $table->boolean('is_headline')->default(false);
             $table->boolean('is_secondary_headline')->default(false);
-            $table->enum('status', ['published', 'draft'])->default('published');
+            $table->string('status')->default(\App\Enums\ContentStatus::PUBLISHED->value);
             
             // Reaction metrics
             $table->integer('reactions_suka')->default(0);

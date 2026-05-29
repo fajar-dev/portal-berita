@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('image');
             $table->string('slug')->unique();
-            $table->enum('status', ['published', 'draft'])->default('published');
+            $table->string('status')->default(\App\Enums\ContentStatus::PUBLISHED->value);
             $table->timestamps();
         });
     }

@@ -20,6 +20,14 @@ class CommentSeeder extends Seeder
                     'email' => 'faisal.haris@gmail.com',
                     'body' => 'Kebijakan yang sangat dinanti. Transisi energi hijau di Indonesia memang lambat tapi langkah regulasi seperti ini adalah fondasi yang bagus.',
                     'created_at' => now()->subHours(5),
+                    'replies' => [
+                        [
+                            'name' => 'Budi Santoso',
+                            'email' => 'budi.santoso@gmail.com',
+                            'body' => 'Betul sekali, Mas Faisal! Apalagi kalau insentif pajaknya diperbesar.',
+                            'created_at' => now()->subHours(4),
+                        ]
+                    ]
                 ],
                 [
                     'name' => 'Dewi Lestari',
@@ -34,6 +42,14 @@ class CommentSeeder extends Seeder
                     'email' => 'rian.k@gmail.com',
                     'body' => 'UMKM memang kunci pertumbuhan ekonomi digital. Pendampingan literasi keuangan digital sangat krusial bagi pedagang pasar tradisional.',
                     'created_at' => now()->subDays(1),
+                    'replies' => [
+                        [
+                            'name' => 'Admin NusaKini',
+                            'email' => 'redaksi@nusakini.com',
+                            'body' => 'Terima kasih atas tanggapannya, Rian. Kami juga berencana meliput inisiatif akar rumput terkait ini.',
+                            'created_at' => now()->subHours(20),
+                        ]
+                    ]
                 ],
                 [
                     'name' => 'Hendra Wijaya',
@@ -71,15 +87,29 @@ class CommentSeeder extends Seeder
         foreach ($commentsData as $slug => $comments) {
             $article = Article::where('slug', $slug)->first();
             if ($article) {
-                foreach ($comments as $comment) {
-                    Comment::create([
+                foreach ($comments as $commentData) {
+                    $comment = Comment::create([
                         'article_id' => $article->id,
-                        'name' => $comment['name'],
-                        'email' => $comment['email'],
-                        'body' => $comment['body'],
-                        'created_at' => $comment['created_at'],
-                        'updated_at' => $comment['created_at'],
+                        'name' => $commentData['name'],
+                        'email' => $commentData['email'],
+                        'body' => $commentData['body'],
+                        'created_at' => $commentData['created_at'],
+                        'updated_at' => $commentData['created_at'],
                     ]);
+                    
+                    if (isset($commentData['replies'])) {
+                        foreach ($commentData['replies'] as $replyData) {
+                            Comment::create([
+                                'article_id' => $article->id,
+                                'parent_id' => $comment->id,
+                                'name' => $replyData['name'],
+                                'email' => $replyData['email'],
+                                'body' => $replyData['body'],
+                                'created_at' => $replyData['created_at'],
+                                'updated_at' => $replyData['created_at'],
+                            ]);
+                        }
+                    }
                 }
             }
         }

@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
             // Since this runs on every view render, we might cache it in production,
             // but for now directly fetching works as expected.
             try {
-                $ads = \App\Models\Advertisement::where('is_active', true)->get()->groupBy('position');
+                $ads = \App\Models\Advertisement::where('is_active', true)->get()->groupBy(fn($ad) => $ad->position->value);
             } catch (\Exception $e) {
                 $ads = collect(); // Table might not exist yet during initial migrate
             }

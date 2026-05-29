@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('iframe_link');
-            $table->enum('status', ['published', 'draft'])->default('published');
+            $table->string('status')->default(\App\Enums\ContentStatus::PUBLISHED->value);
             $table->timestamps();
         });
     }

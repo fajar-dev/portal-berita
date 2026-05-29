@@ -2041,6 +2041,17 @@ a {
     box-shadow: var(--shadow-sm);
 }
 
+.comment-item.is-reply {
+    background-color: transparent;
+    border: none;
+    border-left: 2px solid var(--color-border);
+    border-radius: 0;
+    padding: 0 0 0 20px;
+    margin-top: 20px;
+    margin-left: 40px;
+    box-shadow: none;
+}
+
 .comment-header {
     display: flex;
     justify-content: space-between;
@@ -2572,6 +2583,11 @@ a {
 
     .comment-item {
         padding: 18px;
+    }
+
+    .comment-item.is-reply {
+        margin-left: 20px;
+        padding-left: 15px;
     }
 
     .contact-grid {

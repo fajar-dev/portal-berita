@@ -209,7 +209,14 @@
                     <h4 style="font-family:var(--font-heading); font-size:1.15rem; border-bottom:1px solid var(--color-border); padding-bottom:10px; margin-bottom:20px;">
                         Tinggalkan Umpan Balik / Komentar
                     </h4>
+                    
+                    <div id="reply-indicator" style="display: none; background-color: var(--color-light); padding: 10px 15px; border-radius: var(--border-radius-sm); border-left: 3px solid var(--color-primary); margin-bottom: 15px; font-size: 0.85rem;">
+                        Membalas <strong id="reply-to-name"></strong>
+                        <button type="button" id="cancel-reply-btn" style="float: right; background: none; border: none; color: var(--color-text-muted); cursor: pointer; font-size: 0.8rem; text-decoration: underline;">Batal</button>
+                    </div>
+
                     <form id="article-comment-form" data-slug="{{ $article['slug'] }}">
+                        <input type="hidden" id="comment-parent-id" name="parent_id" value="">
                         <div class="comment-input-row">
                             <input type="text" id="comment-name" class="comment-input-field" placeholder="Nama lengkap Anda..." required>
                             <input type="email" id="comment-email" class="comment-input-field" placeholder="Alamat email Anda..." required>

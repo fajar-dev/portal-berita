@@ -385,23 +385,55 @@ function initReactions() {
    ========================================================================== */
 function initCommentsSection() {
     const commentForm = document.getElementById('article-comment-form');
-    const commentsList = document.getElementById('comments-list-box');
+    const commentsList = document.getElementById('comments-ajax-container');
     const commentCountEl = document.getElementById('comments-count-header');
 
     if (!commentForm || !commentsList) return;
 
     const articleSlug = commentForm.getAttribute('data-slug');
+    const parentIdInput = document.getElementById('comment-parent-id');
+    const replyIndicator = document.getElementById('reply-indicator');
+    const replyToName = document.getElementById('reply-to-name');
+    const cancelReplyBtn = document.getElementById('cancel-reply-btn');
+    const bodyInput = document.getElementById('comment-body');
+
+    // Handle Reply Button Clicks (using event delegation since comments are loaded via AJAX)
+    commentsList.addEventListener('click', (e) => {
+        const replyBtn = e.target.closest('.reply-btn');
+        if (replyBtn) {
+            const commentId = replyBtn.getAttribute('data-id');
+            const authorName = replyBtn.getAttribute('data-author');
+
+            if (parentIdInput) parentIdInput.value = commentId;
+            if (replyToName) replyToName.textContent = authorName;
+            if (replyIndicator) replyIndicator.style.display = 'block';
+
+            // Scroll to form and focus
+            if (bodyInput) {
+                bodyInput.focus();
+                commentForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    // Handle Cancel Reply
+    if (cancelReplyBtn) {
+        cancelReplyBtn.addEventListener('click', () => {
+            if (parentIdInput) parentIdInput.value = '';
+            if (replyIndicator) replyIndicator.style.display = 'none';
+        });
+    }
 
     commentForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
         const nameInput = document.getElementById('comment-name');
         const emailInput = document.getElementById('comment-email');
-        const bodyInput = document.getElementById('comment-body');
 
         const name = nameInput.value.trim();
         const email = emailInput.value.trim();
         const body = bodyInput.value.trim();
+        const parent_id = parentIdInput ? parentIdInput.value : null;
 
         if (!name || !email || !body) {
             showToast('Silakan isi seluruh kolom komentar!', true);
@@ -418,7 +450,7 @@ function initCommentsSection() {
                 'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ name, email, body })
+            body: JSON.stringify({ name, email, body, parent_id })
         })
         .then(response => response.json().then(data => ({ status: response.status, body: data })))
         .then(res => {
@@ -431,24 +463,58 @@ function initCommentsSection() {
                     emptyState.remove();
                 }
 
-                // Render the new comment dynamically at the top
                 const item = document.createElement('div');
                 item.className = 'comment-item dynamic-comment';
-                item.innerHTML = `
-                    <div class="comment-header">
-                        <span class="comment-author">${escapeHTML(comment.name)}</span>
-                        <span class="comment-date">${comment.date}</span>
-                    </div>
-                    <div class="comment-body">
-                        ${escapeHTML(comment.body).replace(/\n/g, '<br>')}
-                    </div>
-                `;
-                commentsList.insertBefore(item, commentsList.firstChild);
+                item.id = 'comment-' + comment.id;
+                
+                // If it's a reply, find parent and append
+                if (comment.parent_id) {
+                    item.className = 'comment-item is-reply dynamic-comment';
+                    item.innerHTML = `
+                        <div class="comment-header">
+                            <span class="comment-author">${escapeHTML(comment.name)}</span>
+                            <span class="comment-date">${comment.date}</span>
+                        </div>
+                        <div class="comment-body">
+                            ${escapeHTML(comment.body).replace(/\n/g, '<br>')}
+                        </div>
+                    `;
 
-                // Update dynamic count in header and database attribute
-                const baseCommentsCount = parseInt(commentsList.getAttribute('data-base-count')) || 0;
-                const newTotal = baseCommentsCount + 1;
-                commentsList.setAttribute('data-base-count', newTotal);
+                    const parentComment = document.getElementById('comment-' + comment.parent_id);
+                    if (parentComment) {
+                        let repliesContainer = parentComment.querySelector('.comment-replies');
+                        if (!repliesContainer) {
+                            repliesContainer = document.createElement('div');
+                            repliesContainer.className = 'comment-replies';
+                            parentComment.appendChild(repliesContainer);
+                        }
+                        repliesContainer.appendChild(item);
+                    } else {
+                        // Fallback if parent not found in DOM
+                        commentsList.insertBefore(item, commentsList.firstChild);
+                    }
+
+                    // Reset reply state
+                    if (cancelReplyBtn) cancelReplyBtn.click();
+                } else {
+                    item.className = 'comment-item is-root dynamic-comment';
+                    item.innerHTML = `
+                        <div class="comment-header">
+                            <span class="comment-author">${escapeHTML(comment.name)}</span>
+                            <span class="comment-date">${comment.date}</span>
+                        </div>
+                        <div class="comment-body">
+                            ${escapeHTML(comment.body).replace(/\n/g, '<br>')}
+                        </div>
+                    `;
+                    commentsList.insertBefore(item, commentsList.firstChild);
+                }
+
+                // Update dynamic count in header
+                const countMatch = commentCountEl ? commentCountEl.textContent.match(/\\d+/) : null;
+                const currentCount = countMatch ? parseInt(countMatch[0]) : 0;
+                const newTotal = currentCount + 1;
+
                 if (commentCountEl) {
                     commentCountEl.textContent = `Komentar (${newTotal})`;
                 }
