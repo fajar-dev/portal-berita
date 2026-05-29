@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['article_id', 'parent_id', 'name', 'email', 'body'])]
+#[Fillable(['article_id', 'parent_id', 'user_id', 'name', 'email', 'body'])]
 class Comment extends Model
 {
     /**
@@ -14,6 +14,14 @@ class Comment extends Model
     public function article()
     {
         return $this->belongsTo(Article::class);
+    }
+
+    /**
+     * Relationship: A comment belongs to a user.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

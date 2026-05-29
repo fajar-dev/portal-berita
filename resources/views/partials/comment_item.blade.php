@@ -1,7 +1,21 @@
 <div class="comment-item {{ $depth > 0 ? 'is-reply' : 'is-root' }}" id="comment-{{ $comment['id'] }}">
-    <div class="comment-header">
-        <span class="comment-author">{{ $comment['name'] }}</span>
-        <span class="comment-date">{{ $comment['date'] }}</span>
+    <div class="comment-header" style="display: flex; align-items: center; gap: 12px;">
+        @if(!empty($comment['avatar']))
+            <img src="{{ $comment['avatar'] }}" alt="{{ $comment['name'] }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+        @else
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">
+                {{ strtoupper(substr($comment['name'], 0, 1)) }}
+            </div>
+        @endif
+        <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="comment-author" style="font-size: 0.95rem;">{{ $comment['name'] }}</span>
+                @if($comment['is_admin'] ?? false)
+                    <span style="background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: bold;">Admin</span>
+                @endif
+            </div>
+            <span class="comment-date" style="font-size: 0.8rem; color: var(--color-text-muted);">{{ $comment['date'] }}</span>
+        </div>
     </div>
     <div class="comment-body">
         {!! nl2br(e($comment['body'])) !!}

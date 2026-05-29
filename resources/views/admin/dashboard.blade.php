@@ -55,7 +55,13 @@
                 @forelse($recentArticles as $article)
                     <tr>
                         <td style="font-weight:600;">{{ Str::limit($article->title, 50) }}</td>
-                        <td>{{ $article->category }}</td>
+                        <td>
+                            @if($article->category)
+                                <span class="badge" style="background: {{ $article->category->color }}; color: #fff;">{{ $article->category->name }}</span>
+                            @else
+                                <span class="badge badge-muted">Tidak ada</span>
+                            @endif
+                        </td>
                         <td>
                             @if($article->status->value === 'published')
                                 <span class="badge badge-success">Terbit</span>

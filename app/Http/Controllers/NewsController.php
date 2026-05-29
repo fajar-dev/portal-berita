@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\VideoStory;
 use App\Models\Opinion;
 use App\Models\Infographic;
@@ -38,7 +39,9 @@ class NewsController extends Controller
             'title' => $article->title,
             'excerpt' => $article->excerpt,
             'content' => $article->content,
-            'category' => $article->category,
+            'category' => $article->category ? $article->category->name : 'Uncategorized',
+            'category_slug' => $article->category ? $article->category->slug : '',
+            'category_color' => $article->category ? $article->category->color : '#666',
             'image' => asset($article->image),
             'author' => $article->user->name,
             'author_username' => $article->user->username,
@@ -77,17 +80,23 @@ class NewsController extends Controller
     public function home()
     {
         // 1. Fetch headline and secondary stacked articles from DB
-        $dbHeadline = Article::with('user')->where('status', \App\Enums\ContentStatus::PUBLISHED)->where('is_headline', true)->first() ?: Article::with('user')->where('status', \App\Enums\ContentStatus::PUBLISHED)->first();
+        $dbHeadline = Article::with(['user', 'category'])->where('status', \App\Enums\ContentStatus::PUBLISHED)->where('is_headline', true)->first() ?: Article::with(['user', 'category'])->where('status', \App\Enums\ContentStatus::PUBLISHED)->first();
         $headline = $this->transformArticle($dbHeadline);
         
-        $secondaryHeadlines = collect(Article::with('user')
+        $secondaryHeadlines = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->where('is_secondary_headline', true)
             ->orderBy('created_at', 'desc')
-            ->take(3)
+            ->take(2)
             ->get())
             ->map(fn($item) => $this->transformArticle($item))
             ->all();
+
+        // 1.5 Fetch popular tags
+        $popularTags = \App\Models\Tag::withCount('articles')
+            ->orderBy('articles_count', 'desc')
+            ->take(5)
+            ->get();
 
         // 2. Fetch video multimedia records
         $videos = VideoStory::where('status', \App\Enums\ContentStatus::PUBLISHED)->get()->toArray();
@@ -98,45 +107,29 @@ class NewsController extends Controller
         // 4. Fetch infographics
         $infographics = Infographic::where('status', \App\Enums\ContentStatus::PUBLISHED)->get()->toArray();
         
-        // 5. Group articles by category dynamically
-        $politikArticles = collect(Article::with('user')
-            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-            ->where('category', 'Politik')
-            ->orderBy('created_at', 'desc')
-            ->take(4)
-            ->get())
-            ->map(fn($item) => $this->transformArticle($item))
-            ->all();
+        // 5. Group articles by category dynamically from DB
+        $allCategories = Category::orderBy('order')->get();
+        $categorySections = [];
+        foreach ($allCategories as $cat) {
+            $articles = collect(Article::with(['user', 'category'])
+                ->where('status', \App\Enums\ContentStatus::PUBLISHED)
+                ->where('category_id', $cat->id)
+                ->orderBy('created_at', 'desc')
+                ->take(4)
+                ->get())
+                ->map(fn($item) => $this->transformArticle($item))
+                ->all();
 
-        $ekonomiArticles = collect(Article::with('user')
-            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-            ->where('category', 'Ekonomi')
-            ->orderBy('created_at', 'desc')
-            ->take(4)
-            ->get())
-            ->map(fn($item) => $this->transformArticle($item))
-            ->all();
-
-        $teknologiArticles = collect(Article::with('user')
-            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-            ->where('category', 'Teknologi')
-            ->orderBy('created_at', 'desc')
-            ->take(4)
-            ->get())
-            ->map(fn($item) => $this->transformArticle($item))
-            ->all();
-        
-        $lifestyleArticles = collect(Article::with('user')
-            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-            ->whereIn('category', ['Gaya Hidup', 'Olahraga'])
-            ->orderBy('created_at', 'desc')
-            ->take(4)
-            ->get())
-            ->map(fn($item) => $this->transformArticle($item))
-            ->all();
+            $categorySections[] = [
+                'name' => $cat->name,
+                'slug' => $cat->slug,
+                'color' => $cat->color,
+                'articles' => $articles,
+            ];
+        }
 
         // 6. Sidebar Trending lists
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('views', 'desc')
             ->take(5)
@@ -144,7 +137,7 @@ class NewsController extends Controller
             ->map(fn($item) => $this->transformArticle($item))
             ->all();
 
-        $latestArticles = collect(Article::with('user')
+        $latestArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('created_at', 'desc')
             ->get())
@@ -157,12 +150,10 @@ class NewsController extends Controller
             'videos', 
             'opinions',
             'infographics',
-            'politikArticles', 
-            'ekonomiArticles', 
-            'teknologiArticles', 
-            'lifestyleArticles',
+            'categorySections',
             'trendingArticles',
-            'latestArticles'
+            'latestArticles',
+            'popularTags'
         ));
     }
 
@@ -171,24 +162,20 @@ class NewsController extends Controller
      */
     public function category($categorySlug)
     {
-        // Category slug mappings
-        $categoryName = ucfirst($categorySlug);
-        if ($categorySlug === 'politik-hukum') $categoryName = 'Politik';
-        if ($categorySlug === 'ekonomi-bisnis') $categoryName = 'Ekonomi';
-        if ($categorySlug === 'teknologi-sains') $categoryName = 'Teknologi';
-        if ($categorySlug === 'gaya-hidup') $categoryName = 'Gaya Hidup';
+        $cat = Category::where('slug', $categorySlug)->firstOrFail();
+        $categoryName = $cat->name;
 
         // Query database
-        $categoryArticles = collect(Article::with('user')
+        $categoryArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-            ->where('category', $categoryName)
+            ->where('category_id', $cat->id)
             ->orderBy('created_at', 'desc')
             ->get())
             ->map(fn($item) => $this->transformArticle($item))
             ->all();
 
         // Sidebar Trending
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('views', 'desc')
             ->take(5)
@@ -226,9 +213,9 @@ class NewsController extends Controller
         $article = $this->transformArticle($dbArticle);
 
         // Get related articles (same category, excluding active one)
-        $related = collect(Article::with('user')
+        $related = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-            ->where('category', $dbArticle->category)
+            ->where('category_id', $dbArticle->category_id)
             ->where('id', '!=', $dbArticle->id)
             ->take(3)
             ->get())
@@ -236,7 +223,7 @@ class NewsController extends Controller
             ->all();
 
         // Sidebar Trending
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('views', 'desc')
             ->take(5)
@@ -262,7 +249,7 @@ class NewsController extends Controller
 
         \Illuminate\Support\Carbon::setLocale('id');
         
-        $rootComments = \App\Models\Comment::with(['replies' => function($q) {
+        $rootComments = \App\Models\Comment::with(['user', 'replies.user', 'replies' => function($q) {
             $q->orderBy('created_at', 'asc');
         }])
         ->where('article_id', $dbArticle->id)
@@ -273,8 +260,10 @@ class NewsController extends Controller
         $formatComment = function($comment) use (&$formatComment) {
             return [
                 'id' => $comment->id,
-                'name' => $comment->name,
-                'email' => $comment->email,
+                'name' => $comment->user ? $comment->user->name : $comment->name,
+                'email' => $comment->user ? $comment->user->email : $comment->email,
+                'avatar' => $comment->user && $comment->user->avatar ? asset($comment->user->avatar) : null,
+                'is_admin' => $comment->user && $comment->user->role === 'admin',
                 'body' => $comment->body,
                 'date' => $comment->created_at->translatedFormat('d M Y - H:i'),
                 'replies' => $comment->replies ? $comment->replies->map($formatComment)->all() : []
@@ -292,7 +281,7 @@ class NewsController extends Controller
      */
     public function bookmarks()
     {
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('views', 'desc')
             ->take(5)
@@ -318,7 +307,7 @@ class NewsController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            $results = collect(Article::with('user')
+            $results = collect(Article::with(['user', 'category'])
                 ->where('status', \App\Enums\ContentStatus::PUBLISHED)
                 ->where(function($q) use ($query) {
                     $q->where('title', 'like', "%{$query}%")
@@ -329,7 +318,7 @@ class NewsController extends Controller
                 ->all();
         }
 
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('views', 'desc')
             ->take(5)
@@ -384,7 +373,7 @@ class NewsController extends Controller
         }
 
         // Query articles of this author
-        $authorArticles = collect(Article::with('user')
+        $authorArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->where('user_id', $dbUser->id)
             ->orderBy('created_at', 'desc')
@@ -403,7 +392,7 @@ class NewsController extends Controller
         $totalViews = Article::where('status', \App\Enums\ContentStatus::PUBLISHED)->where('user_id', $dbUser->id)->sum('views');
         $totalArticles = Article::where('status', \App\Enums\ContentStatus::PUBLISHED)->where('user_id', $dbUser->id)->count();
 
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->get())
             ->map(fn($item) => $this->transformArticle($item))
@@ -417,7 +406,7 @@ class NewsController extends Controller
      */
     public function contact()
     {
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -434,7 +423,7 @@ class NewsController extends Controller
     {
         $page = Page::where('slug', $slug)->where('is_active', true)->firstOrFail();
         
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->orderBy('views', 'desc')
             ->take(5)
             ->get())
@@ -453,12 +442,7 @@ class NewsController extends Controller
         $pages = Page::where('is_active', true)->orderBy('updated_at', 'desc')->get();
         $tags = Tag::orderBy('updated_at', 'desc')->get();
 
-        $categories = [
-            'politik-hukum',
-            'ekonomi-bisnis',
-            'teknologi-sains',
-            'gaya-hidup'
-        ];
+        $categories = Category::orderBy('order')->get();
 
         $content = view('pages.sitemap', compact('articles', 'pages', 'tags', 'categories'));
 
@@ -552,8 +536,9 @@ class NewsController extends Controller
         $comment = Comment::create([
             'article_id' => $article->id,
             'parent_id' => $request->parent_id,
-            'name' => $request->name,
-            'email' => $request->email,
+            'user_id' => auth()->id(), // Save user_id if authenticated
+            'name' => auth()->check() ? auth()->user()->name : $request->name,
+            'email' => auth()->check() ? auth()->user()->email : $request->email,
             'body' => $request->body,
         ]);
 
@@ -690,7 +675,7 @@ class NewsController extends Controller
 
         $tagName = $tag->name;
 
-        $trendingArticles = collect(Article::with('user')
+        $trendingArticles = collect(Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('views', 'desc')
             ->take(5)
@@ -741,7 +726,7 @@ class NewsController extends Controller
      */
     public function feed()
     {
-        $articles = Article::with('user')
+        $articles = Article::with(['user', 'category'])
             ->where('status', \App\Enums\ContentStatus::PUBLISHED)
             ->orderBy('created_at', 'desc')
             ->take(20)

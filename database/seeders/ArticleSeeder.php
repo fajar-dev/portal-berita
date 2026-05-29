@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -20,6 +21,9 @@ class ArticleSeeder extends Seeder
         $budi = User::where('email', 'budi@nusakini.com')->first();
         $dwi = User::where('email', 'dwi@nusakini.com')->first();
         $laras = User::where('email', 'laras@nusakini.com')->first();
+
+        // Map category slugs to IDs
+        $catMap = Category::pluck('id', 'slug')->toArray();
 
         $articles = [
             [
@@ -52,7 +56,7 @@ class ArticleSeeder extends Seeder
                     <p>Meskipun regulasi telah dipermudah, para pakar ekonomi menekankan bahwa tantangan utama transisi energi terletak pada aspek pendanaan awal. Diperkirakan Indonesia membutuhkan dana tak kurang dari 1.000 triliun rupiah dalam tiga dekade mendatang untuk memodernisasi infrastruktur jaringan listrik (*smart grid*) nasional agar mampu menampung suplai listrik yang bersifat fluktuatif (*intermittent*) dari energi bersih.</p>
                     <p>Untuk mengatasi hal tersebut, pemerintah menggandeng konsorsium lembaga pembiayaan internasional serta menerbitkan obligasi hijau (*Green Bond*) di bursa efek internasional. Hal ini diharapkan mampu menekan biaya modal (*cost of capital*) bagi para pengembang proyek EBT swasta di dalam negeri.</p>
                 ',
-                'category' => 'Politik',
+                'category_id' => $catMap['politik-hukum'] ?? 1,
                 'image' => '/storage/articles/article_1.jpg',
                 'user_id' => $andika->id,
                 'read_time' => '5 menit',
@@ -89,7 +93,7 @@ class ArticleSeeder extends Seeder
                     <h3>Peran Fintech dalam Pembiayaan Produktif</h3>
                     <p>Akses pembiayaan modal kerja yang selama ini menjadi kendala klasik UMKM kini mulai teratasi dengan kehadiran industri teknologi finansial (*fintech lending*) yang kredibel dan berizin resmi. Dengan analisis credit scoring berbasis kecerdasan buatan, pelaku usaha kecil kini dapat memperoleh pinjaman modal produktif tanpa agunan konvensional hanya dalam waktu hitungan jam saja.</p>
                 ',
-                'category' => 'Ekonomi',
+                'category_id' => $catMap['ekonomi-bisnis'] ?? 2,
                 'image' => '/storage/articles/article_2.jpg',
                 'user_id' => $siti->id,
                 'read_time' => '4 menit',
@@ -126,7 +130,7 @@ class ArticleSeeder extends Seeder
                     <h3>Isu Etika dan Keamanan Data Pasien</h3>
                     <p>Kendati menawarkan revolusi luar biasa, kemajuan ini menyisakan diskusi mendalam seputar aspek etika serta kerahasiaan data rekam medis pasien. Komisi Kedokteran Nasional terus merumuskan batas-batas kepatuhan regulasi yang ketat agar pemanfaatan data pelatihan medis terjamin anonimitasnya dan bebas dari risiko kebocoran data siber.</p>
                 ',
-                'category' => 'Teknologi',
+                'category_id' => $catMap['teknologi-sains'] ?? 3,
                 'image' => '/storage/articles/article_3.jpg',
                 'user_id' => $budi->id,
                 'read_time' => '6 menit',
@@ -163,7 +167,7 @@ class ArticleSeeder extends Seeder
                     <h3>Dukungan Psikologi Olahraga</h3>
                     <p>Selain optimalisasi fisik, sport science juga mencakup aspek kekuatan mental (*sports psychology*). Latihan simulasi konsentrasi menggunakan sistem realitas virtual (VR) diterapkan untuk membiasakan atlet menghadapi tekanan psikologis kebisingan penonton stadion, melatih fokus pengambilan keputusan krusial di momen genting pertandingan.</p>
                 ',
-                'category' => 'Olahraga',
+                'category_id' => $catMap['olahraga'] ?? 5,
                 'image' => '/storage/articles/article_4.jpg',
                 'user_id' => $dwi->id,
                 'read_time' => '5 menit',
@@ -200,7 +204,7 @@ class ArticleSeeder extends Seeder
                     <h3>Kontribusi bagi Perekonomian Warga Lokal</h3>
                     <p>Aspek terpenting dari wisata kebugaran ini adalah keterlibatan langsung masyarakat adat. Resort mengajak para pemuka spiritual lokal untuk memimpin upacara pembersihan diri tradisional (*melukat*), mempekerjakan ahli pengobatan herbal daerah, serta membeli bahan pangan lokal. Pola kemitraan ini terbukti menjaga kelestarian budaya sekaligus mendongkrak kesejahteraan ekonomi warga desa secara langsung.</p>
                 ',
-                'category' => 'Gaya Hidup',
+                'category_id' => $catMap['gaya-hidup'] ?? 4,
                 'image' => '/storage/articles/article_5.jpg',
                 'user_id' => $laras->id,
                 'read_time' => '4 menit',
@@ -237,7 +241,7 @@ class ArticleSeeder extends Seeder
                     <h3>Sanksi Ketat bagi Pelanggar Kuota Emisi Carbon</h3>
                     <p>KTT kali ini juga menyepakati pembentukan badan pengawas iklim independen PBB yang berhak menjatuhkan sanksi hambatan perdagangan internasional bagi negara industri yang terbukti melanggar batas kuota pelepasan emisi karbon tahunan mereka. Langkah penegakan sanksi ini diyakini akan mendesak industri manufaktur global untuk segera memodernisasi pabrik mereka menjadi netral karbon.</p>
                 ',
-                'category' => 'Internasional',
+                'category_id' => $catMap['internasional'] ?? 6,
                 'image' => '/storage/articles/article_6.jpg',
                 'user_id' => $andika->id,
                 'read_time' => '5 menit',
@@ -274,7 +278,7 @@ class ArticleSeeder extends Seeder
                     <h3>Tantangan Pemancaran Frekuensi Terahertz</h3>
                     <p>Kendati demikian, tantangan fisik pengembangan 6G terletak pada transmisi gelombang frekuensi sangat tinggi (Terahertz). Gelombang ini memiliki kelemahan jarak pancar yang sangat pendek serta mudah terhalang oleh material padat seperti dinding gedung beton. Para peneliti terus menguji material baru antena berbasis nanoteknologi guna memperluas pancaran sinyal di area urban.</p>
                 ',
-                'category' => 'Teknologi',
+                'category_id' => $catMap['teknologi-sains'] ?? 3,
                 'image' => '/storage/articles/article_7.jpg',
                 'user_id' => $budi->id,
                 'read_time' => '5 menit',
@@ -311,7 +315,7 @@ class ArticleSeeder extends Seeder
                     <h3>Kerjasama Pendanaan Swasta Lewat Skema KPBU</h3>
                     <p>Mengingat anggaran pembangunan yang sangat fantastis, proyek transportasi massal ini tidak hanya mengandalkan suntikan dana kas negara murni. Pemerintah masif menerapkan skema Kerjasama Pemerintah dan Badan Usaha (KPBU) guna menarik minat investasi dana pensiun asing jangka panjang untuk ikut berpartisipasi mengelola stasiun modern berkonsep TOD (*Transit Oriented Development*).</p>
                 ',
-                'category' => 'Ekonomi',
+                'category_id' => $catMap['ekonomi-bisnis'] ?? 2,
                 'image' => '/storage/articles/article_8.jpg',
                 'user_id' => $siti->id,
                 'read_time' => '5 menit',
@@ -334,7 +338,7 @@ class ArticleSeeder extends Seeder
                     
                     <p>Kemenangan mutlak ini menjadi angin segar di tengah sorotan publik atas penurunan performa atlet senior di beberapa turnamen dunia sebelumnya. Kepala Bidang Pembinaan Prestasi menegaskan bahwa restrukturisasi sistem rekrutmen berbasis pemetaan genetik dan sensor gerak terbukti berhasil menjaring talenta emas sejak usia dini.</p>
                 ',
-                'category' => 'Olahraga',
+                'category_id' => $catMap['olahraga'] ?? 5,
                 'image' => '/storage/articles/article_9.jpg',
                 'user_id' => $dwi->id,
                 'read_time' => '3 menit',
@@ -357,7 +361,7 @@ class ArticleSeeder extends Seeder
                     'title' => $art['title'],
                     'excerpt' => $art['excerpt'],
                     'content' => $art['content'],
-                    'category' => $art['category'],
+                    'category_id' => $art['category_id'],
                     'image' => $art['image'],
                     'read_time' => $art['read_time'],
                     'views' => $art['views'],

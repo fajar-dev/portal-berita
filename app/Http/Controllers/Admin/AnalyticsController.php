@@ -90,9 +90,10 @@ class AnalyticsController extends Controller
             ->get();
 
         // ── Views by Category ──
-        $categoryViews = Article::select('category', DB::raw('SUM(views) as total_views'))
-            ->where('status', \App\Enums\ContentStatus::PUBLISHED)
-            ->groupBy('category')
+        $categoryViews = Article::join('categories', 'articles.category_id', '=', 'categories.id')
+            ->select('categories.name as category', 'categories.color', DB::raw('SUM(articles.views) as total_views'))
+            ->where('articles.status', \App\Enums\ContentStatus::PUBLISHED)
+            ->groupBy('categories.name', 'categories.color')
             ->orderByDesc('total_views')
             ->get();
 

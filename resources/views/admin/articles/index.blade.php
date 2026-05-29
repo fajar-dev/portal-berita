@@ -35,7 +35,13 @@
                             <div class="td-sub">{{ $article->created_at->format('d M Y, H:i') }}</div>
                         </td>
                         <td class="td-secondary">{{ $article->user->name ?? '—' }}</td>
-                        <td class="td-secondary">{{ $article->category }}</td>
+                        <td>
+                            @if($article->category)
+                                <span class="badge" style="background:{{ $article->category->color }}20;color:{{ $article->category->color }};">{{ $article->category->name }}</span>
+                            @else
+                                <span class="td-muted">—</span>
+                            @endif
+                        </td>
                         <td class="td-num">{{ number_format($article->views) }}</td>
                         <td>
                             @if($article->status->value === 'published')

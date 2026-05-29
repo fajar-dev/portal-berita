@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 #[Fillable([
-    'user_id', 'slug', 'title', 'excerpt', 'content', 'category', 'image', 
+    'user_id', 'slug', 'title', 'excerpt', 'content', 'category_id', 'image', 
     'read_time', 'views', 'is_headline', 'is_secondary_headline', 
     'reactions_suka', 'reactions_terkejut', 'reactions_inspiratif', 'reactions_sedih', 'status'
 ])]
@@ -31,6 +31,14 @@ class Article extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the category of the article.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

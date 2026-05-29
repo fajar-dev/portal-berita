@@ -83,7 +83,13 @@
         <div class="comment-card">
             {{-- Parent Comment --}}
             <div class="comment-main">
-                <div class="comment-avatar">{{ strtoupper(substr($comment->name, 0, 1)) }}</div>
+                @if($comment->user && $comment->user->avatar)
+                    <div class="comment-avatar" style="background: none;">
+                        <img src="{{ asset($comment->user->avatar) }}" alt="{{ $comment->name }}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                    </div>
+                @else
+                    <div class="comment-avatar">{{ strtoupper(substr($comment->name, 0, 1)) }}</div>
+                @endif
                 <div class="comment-content">
                     <div class="comment-meta">
                         <span class="comment-name">{{ $comment->name }}</span>
@@ -121,14 +127,20 @@
             <div class="comment-replies">
                 @foreach($comment->replies as $reply)
                 <div class="reply-item">
-                    <div class="comment-avatar {{ $reply->name === 'Admin NusaKini' ? 'comment-avatar--admin' : '' }}" style="width:28px;height:28px;font-size:.65rem;">
-                        {{ strtoupper(substr($reply->name, 0, 1)) }}
-                    </div>
+                    @if($reply->user && $reply->user->avatar)
+                        <div class="comment-avatar" style="width:28px;height:28px;background:none;">
+                            <img src="{{ asset($reply->user->avatar) }}" alt="{{ $reply->name }}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                        </div>
+                    @else
+                        <div class="comment-avatar {{ ($reply->user && $reply->user->role === 'admin') ? 'comment-avatar--admin' : '' }}" style="width:28px;height:28px;font-size:.65rem;">
+                            {{ strtoupper(substr($reply->name, 0, 1)) }}
+                        </div>
+                    @endif
                     <div class="reply-content">
                         <div class="reply-meta">
                             <span class="reply-name">
                                 {{ $reply->name }}
-                                @if($reply->name === 'Admin NusaKini')
+                                @if($reply->user && $reply->user->role === 'admin')
                                     <span class="badge badge-success" style="font-size:.6rem;padding:1px 6px;margin-left:2px;">Admin</span>
                                 @endif
                             </span>

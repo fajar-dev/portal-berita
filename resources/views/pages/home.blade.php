@@ -7,23 +7,19 @@
     <!-- ==========================================================================
            0. Modern Popular Tags Filter Clouds (Soft Pills Navbar Overlay)
            ========================================================================== -->
-    <div
-        style="margin-top: 25px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 4px 0;">
-        <span
-            style="font-size: 0.75rem; font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.8px;">
+    <div style="margin-top: 25px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 4px 0;">
+        <span style="font-size: 0.75rem; font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.8px;">
             Topik Hangat:
         </span>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <a href="{{ route('news.search') }}?q=EBT"
-                style="font-size: 0.78rem; font-weight: 700; background-color: var(--color-card-bg); border: 1.5px solid var(--color-border); padding: 5px 14px; border-radius: var(--border-radius-pill); color: var(--color-text);">#EnergiHijau</a>
-            <a href="{{ route('news.search') }}?q=AI"
-                style="font-size: 0.78rem; font-weight: 700; background-color: var(--color-card-bg); border: 1.5px solid var(--color-border); padding: 5px 14px; border-radius: var(--border-radius-pill); color: var(--color-text);">#KecerdasanBuatan</a>
-            <a href="{{ route('news.search') }}?q=UMKM"
-                style="font-size: 0.78rem; font-weight: 700; background-color: var(--color-card-bg); border: 1.5px solid var(--color-border); padding: 5px 14px; border-radius: var(--border-radius-pill); color: var(--color-text);">#EkonomiDigital</a>
-            <a href="{{ route('news.search') }}?q=Olimpiade"
-                style="font-size: 0.78rem; font-weight: 700; background-color: var(--color-card-bg); border: 1.5px solid var(--color-border); padding: 5px 14px; border-radius: var(--border-radius-pill); color: var(--color-text);">#SportScience</a>
-            <a href="{{ route('news.search') }}?q=Badminton"
-                style="font-size: 0.78rem; font-weight: 700; background-color: var(--color-card-bg); border: 1.5px solid var(--color-border); padding: 5px 14px; border-radius: var(--border-radius-pill); color: var(--color-text);">#BadmintonJunior</a>
+            @if(isset($popularTags) && count($popularTags) > 0)
+                @foreach($popularTags as $tag)
+                    <a href="{{ route('news.tag', $tag->slug) }}"
+                        style="font-size: 0.78rem; font-weight: 700; background-color: var(--color-card-bg); border: 1.5px solid var(--color-border); padding: 5px 14px; border-radius: var(--border-radius-pill); color: var(--color-text);">#{{ $tag->name }}</a>
+                @endforeach
+            @else
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--color-text-muted);">Belum ada topik populer</span>
+            @endif
         </div>
     </div>
 
@@ -36,7 +32,7 @@
         @if(isset($headline))
             <div class="hero-primary-card">
                 <div class="hero-image-wrap">
-                    <span class="category-tag">{{ $headline['category'] }}</span>
+                    <span class="category-tag" style="background:{{ $headline['category_color'] }};">{{ $headline['category'] }}</span>
                     <img data-src="{{ $headline['image'] }}" alt="{{ $headline['title'] }}" class="lazy-image"
                         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                 </div>
@@ -77,8 +73,8 @@
         <div class="hero-secondary-stack">
             @if(isset($secondaryHeadlines) && count($secondaryHeadlines) > 0)
                 @foreach($secondaryHeadlines as $item)
-                    <a href="{{ route('news.detail', $item['slug']) }}" class="stacked-card">
-                        <span class="stacked-category">
+                    <a href="{{ route('news.detail', $item['slug']) }}" class="stacked-card" style="--cat-color: {{ $item['category_color'] }};">
+                        <span class="stacked-category" style="background:{{ $item['category_color'] }};">
                             {{ $item['category'] }}
                         </span>
                         <div class="stacked-thumb">
@@ -223,21 +219,34 @@
            ========================================================================== -->
         <div class="portal-main-grid">
 
-            <!-- Left Column: Modular Category Feeds -->
+            <!-- Left Column: Dynamic Category Feeds -->
             <div class="main-left-column">
 
-                <!-- Category Politik & Hukum -->
-                <div style="margin-bottom: 45px;">
-                    <div class="section-header">
-                        <h3 class="section-title">Politik & <span>Hukum</span></h3>
-                        <a href="{{ route('news.category', 'politik-hukum') }}" class="section-view-all">Lihat Semua →</a>
-                    </div>
-                    <div class="news-grid grid-2">
-                        @if(isset($politikArticles) && count($politikArticles) > 0)
-                            @foreach($politikArticles as $item)
+                @foreach($categorySections as $section)
+                    @if(count($section['articles']) > 0)
+                    <div style="margin-bottom: 45px;">
+                        <style>
+                            .section-header-{{ $section['slug'] }}::after {
+                                background-color: {{ $section['color'] }} !important;
+                            }
+                            .section-header-{{ $section['slug'] }} .section-view-all {
+                                color: {{ $section['color'] }} !important;
+                                background-color: color-mix(in srgb, {{ $section['color'] }} 12%, transparent) !important;
+                            }
+                            .section-header-{{ $section['slug'] }} .section-view-all:hover {
+                                background-color: {{ $section['color'] }} !important;
+                                color: #fff !important;
+                            }
+                        </style>
+                        <div class="section-header section-header-{{ $section['slug'] }}">
+                            <h3 class="section-title">{{ $section['name'] }}</h3>
+                            <a href="{{ route('news.category', $section['slug']) }}" class="section-view-all">Lihat Semua →</a>
+                        </div>
+                        <div class="news-grid grid-2">
+                            @foreach($section['articles'] as $item)
                                 <article class="news-card">
                                     <div class="card-image-wrap lazy-image-wrap">
-                                        <span class="category-tag">{{ $item['category'] }}</span>
+                                        <span class="category-tag" style="background:{{ $item['category_color'] }};">{{ $item['category'] }}</span>
                                         <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image"
                                             src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                                     </div>
@@ -258,117 +267,10 @@
                                     </div>
                                 </article>
                             @endforeach
-                        @endif
+                        </div>
                     </div>
-                </div>
-
-                <!-- Category Teknologi & Sains -->
-                <div style="margin-bottom: 45px;">
-                    <div class="section-header">
-                        <h3 class="section-title">Teknologi & <span>Sains</span></h3>
-                        <a href="{{ route('news.category', 'teknologi-sains') }}" class="section-view-all">Lihat Semua →</a>
-                    </div>
-                    <div class="news-grid grid-2">
-                        @if(isset($teknologiArticles) && count($teknologiArticles) > 0)
-                            @foreach($teknologiArticles as $item)
-                                <article class="news-card">
-                                    <div class="card-image-wrap lazy-image-wrap">
-                                        <span class="category-tag">{{ $item['category'] }}</span>
-                                        <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image"
-                                            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-                                    </div>
-                                    <div class="card-content">
-                                        <div class="article-meta">
-                                            <span class="article-author">{{ $item['author'] }}</span>
-                                            <span>•</span>
-                                            <span>{{ $item['date'] }}</span>
-                                        </div>
-                                        <h4 class="card-title">
-                                            <a href="{{ route('news.detail', $item['slug']) }}">{{ $item['title'] }}</a>
-                                        </h4>
-                                        <p class="card-excerpt">
-                                            {{ $item['excerpt'] }}
-                                        </p>
-                                        <a href="{{ route('news.detail', $item['slug']) }}" class="btn-read-more"
-                                            style="margin-top: auto;">Baca Berita →</a>
-                                    </div>
-                                </article>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Category Ekonomi & Bisnis -->
-                <div style="margin-bottom: 45px;">
-                    <div class="section-header">
-                        <h3 class="section-title">Ekonomi & <span>Bisnis</span></h3>
-                        <a href="{{ route('news.category', 'ekonomi-bisnis') }}" class="section-view-all">Lihat Semua →</a>
-                    </div>
-                    <div class="news-grid grid-2">
-                        @if(isset($ekonomiArticles) && count($ekonomiArticles) > 0)
-                            @foreach($ekonomiArticles as $item)
-                                <article class="news-card">
-                                    <div class="card-image-wrap lazy-image-wrap">
-                                        <span class="category-tag">{{ $item['category'] }}</span>
-                                        <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image"
-                                            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-                                    </div>
-                                    <div class="card-content">
-                                        <div class="article-meta">
-                                            <span class="article-author">{{ $item['author'] }}</span>
-                                            <span>•</span>
-                                            <span>{{ $item['date'] }}</span>
-                                        </div>
-                                        <h4 class="card-title">
-                                            <a href="{{ route('news.detail', $item['slug']) }}">{{ $item['title'] }}</a>
-                                        </h4>
-                                        <p class="card-excerpt">
-                                            {{ $item['excerpt'] }}
-                                        </p>
-                                        <a href="{{ route('news.detail', $item['slug']) }}" class="btn-read-more"
-                                            style="margin-top: auto;">Baca Berita →</a>
-                                    </div>
-                                </article>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Category Olahraga & Gaya Hidup (New Section on Homepage) -->
-                <div style="margin-bottom: 25px;">
-                    <div class="section-header">
-                        <h3 class="section-title">Olahraga & <span>Gaya Hidup</span></h3>
-                        <a href="{{ route('news.category', 'gaya-hidup') }}" class="section-view-all">Lihat Semua →</a>
-                    </div>
-                    <div class="news-grid grid-2">
-                        @if(isset($lifestyleArticles) && count($lifestyleArticles) > 0)
-                            @foreach($lifestyleArticles as $item)
-                                <article class="news-card">
-                                    <div class="card-image-wrap lazy-image-wrap">
-                                        <span class="category-tag">{{ $item['category'] }}</span>
-                                        <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image"
-                                            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-                                    </div>
-                                    <div class="card-content">
-                                        <div class="article-meta">
-                                            <span class="article-author">{{ $item['author'] }}</span>
-                                            <span>•</span>
-                                            <span>{{ $item['date'] }}</span>
-                                        </div>
-                                        <h4 class="card-title">
-                                            <a href="{{ route('news.detail', $item['slug']) }}">{{ $item['title'] }}</a>
-                                        </h4>
-                                        <p class="card-excerpt">
-                                            {{ $item['excerpt'] }}
-                                        </p>
-                                        <a href="{{ route('news.detail', $item['slug']) }}" class="btn-read-more"
-                                            style="margin-top: auto;">Baca Berita →</a>
-                                    </div>
-                                </article>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
+                    @endif
+                @endforeach
 
             </div>
 

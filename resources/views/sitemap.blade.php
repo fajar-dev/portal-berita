@@ -11,7 +11,7 @@
     <!-- Categories -->
     @foreach($categories as $cat)
         <url>
-            <loc>{{ route('news.category', $cat) }}</loc>
+            <loc>{{ route('news.category', $cat->slug) }}</loc>
             <lastmod>{{ now()->startOfDay()->toAtomString() }}</lastmod>
             <changefreq>daily</changefreq>
             <priority>0.8</priority>

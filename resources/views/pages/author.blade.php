@@ -62,7 +62,7 @@
                     @foreach($authorArticles as $item)
                         <article class="news-card">
                             <div class="card-image-wrap lazy-image-wrap">
-                                <span class="category-tag">{{ $item['category'] }}</span>
+                                <span class="category-tag" style="background:{{ $item['category_color'] }};">{{ $item['category'] }}</span>
                                 <img data-src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="lazy-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
                             </div>
                             <div class="card-content">

@@ -68,10 +68,10 @@
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Kategori</label>
-                    <select name="category" class="form-control" required>
+                    <select name="category_id" class="form-control" required>
                         <option value="">Pilih Kategori</option>
-                        @foreach($categories as $val => $label)
-                            <option value="{{ $val }}" {{ old('category', $article->category ?? '') == $val ? 'selected' : '' }}>{{ $label }}</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ old('category_id', $article->category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                         @endforeach
                     </select>
                 </div>

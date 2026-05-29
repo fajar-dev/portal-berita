@@ -10,7 +10,7 @@ class CommentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Comment::with(['article', 'replies' => function ($q) {
+        $query = Comment::with(['article', 'user', 'replies.user', 'replies' => function ($q) {
             $q->orderBy('created_at', 'asc');
         }])->whereNull('parent_id');
         if ($request->filled('q')) {
@@ -31,7 +31,8 @@ class CommentController extends Controller
         Comment::create([
             'article_id' => $comment->article_id,
             'parent_id' => $comment->id,
-            'name' => 'Admin NusaKini',
+            'user_id' => auth()->id(),
+            'name' => auth()->user()->name ?? 'Admin NusaKini',
             'email' => auth()->user()->email ?? 'admin@nusakini.com',
             'body' => $request->body,
         ]);

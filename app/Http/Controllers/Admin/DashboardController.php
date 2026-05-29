@@ -21,7 +21,7 @@ class DashboardController extends Controller
             'comments_count' => Comment::count(),
         ];
 
-        $recentArticles = Article::with('user')->orderBy('created_at', 'desc')->take(8)->get();
+        $recentArticles = Article::with(['user', 'category'])->orderBy('created_at', 'desc')->take(8)->get();
 
         return view('admin.dashboard', compact('stats', 'recentArticles'));
     }

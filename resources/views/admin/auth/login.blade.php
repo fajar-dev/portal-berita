@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — Admin NusaKini</title>
+    <title>Login — Admin {{ \App\Models\Setting::get('site_name', 'NusaKini') }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&family=Plus+Jakarta+Sans:wght@300..800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,7 +53,12 @@
 <body>
     <div class="login-wrap">
         <div class="login-brand">
-            <div class="login-brand-logo">Nusa<em>Kini</em></div>
+            @php $siteLogo = \App\Models\Setting::get('site_logo'); @endphp
+            @if($siteLogo)
+                <img src="{{ asset($siteLogo) }}" alt="{{ \App\Models\Setting::get('site_name', 'NusaKini') }}" style="max-height: 40px; margin-bottom: 8px;">
+            @else
+                <div class="login-brand-logo">{{ \App\Models\Setting::get('site_name', 'NusaKini') }}</div>
+            @endif
             <p>Masuk ke panel administrasi</p>
         </div>
 

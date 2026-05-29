@@ -144,12 +144,12 @@
 {{-- Views by Category --}}
 <div class="chart-card">
     <div class="chart-title">Views per Kategori</div>
-    @php $catMax = $categoryViews->max('total_views') ?: 1; $catColors = ['politik-hukum'=>'#dc2626','ekonomi-bisnis'=>'#2563eb','teknologi-sains'=>'#7c3aed','gaya-hidup'=>'#16a34a','olahraga'=>'#f59e0b','internasional'=>'#0891b2']; @endphp
+    @php $catMax = $categoryViews->max('total_views') ?: 1; @endphp
     @foreach($categoryViews as $cat)
     <div class="bar-row">
         <span class="bar-label">{{ $cat->category }}</span>
         <div class="bar-track">
-            <div class="bar-fill" style="width:{{ ($cat->total_views / $catMax) * 100 }}%;background:{{ $catColors[$cat->category] ?? 'var(--admin-primary)' }};"></div>
+            <div class="bar-fill" style="width:{{ ($cat->total_views / $catMax) * 100 }}%;background:{{ $cat->color ?? 'var(--admin-primary)' }};"></div>
         </div>
         <span class="bar-value">{{ number_format($cat->total_views) }}</span>
     </div>
